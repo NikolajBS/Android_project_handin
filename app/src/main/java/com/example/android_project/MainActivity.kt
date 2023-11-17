@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import com.example.android_project.ui.theme.Android_projectTheme
 import androidx.navigation.compose.rememberNavController
 import com.example.android_project.routes.Screen
+import com.example.android_project.screens.HomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,9 +27,10 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     //Greeting("Android")
-                    Button(onClick = { /*TODO*/ }) {
-                        Text(text = "something")
-                    }
+                    Navigation(name = "testing")
+                    //Button(onClick = { /*TODO*/ }) {
+                    //    Text(text = "something")
+                    //}
                 }
             }
         }
@@ -42,6 +44,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
             modifier = modifier
     )
 }
+
 @Composable
 fun Navigation(name: String, modifier: Modifier = Modifier) {
 
@@ -54,7 +57,7 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
             startDestination = Screen.HomeScreen.route
         ){
 
-            composable(Screen.HomeScreen.route) { Screen.HomeScreen(navigation = navigation) }
+            composable(Screen.HomeScreen.route) { HomeScreen(navigation = navigation) }
             /*
             composable(Screen.AnotherScreen.route) { AnotherScreen(navigation = navigation)}
             composable(Screen.SwScreen.route) { SwScreen(navigation = navigation)}

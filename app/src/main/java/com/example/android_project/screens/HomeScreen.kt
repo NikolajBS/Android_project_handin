@@ -8,14 +8,15 @@ import androidx.navigation.NavController
 import com.example.android_project.routes.Screen
 
 @Composable
-fun Home(navigation: NavController){
+fun HomeScreen(navigation: NavController){
     Column {
-        Button(onClick = { navigation.navigate(Screen.NiceScreen.route) }) {
+        Button(onClick = {  }) {
             Text(text = "Create group")
         }
+        CreateGroup()
     }
 }
-
+@Composable
 fun CreateGroup(){
-
+    Text(text = "something")
 }
