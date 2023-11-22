@@ -19,7 +19,7 @@ fun GroupNav(){
         }
 
         composable(Routes.EDIT_SCREEN){
-            GroupEdit()
+            GroupEdit(navController)
         }
     }
 }
