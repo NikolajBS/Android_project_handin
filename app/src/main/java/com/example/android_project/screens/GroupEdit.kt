@@ -2,9 +2,12 @@ package com.example.android_project.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,12 +17,15 @@ import androidx.navigation.NavController
 import com.example.android_project.ui.theme.Android_projectTheme
 
 @Composable
-fun GroupEdit(navController: NavController) {
-    Column {
-        Text(text = "Group Edit")
-        Button(onClick = { navController.navigate("groupPage") }) {
-            Text(text = "Go to Group Page")
-        }
+fun GroupEdit() {
+    Surface(
+        modifier= Modifier.fillMaxSize()
+    ) {
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp),
+            text = "Group Page")
     }
 }
 
@@ -27,6 +33,6 @@ fun GroupEdit(navController: NavController) {
 @Composable
 fun GroupEditPreview() {
     MaterialTheme {
-        GroupEdit(navController = PreviewNavController())
+        GroupEdit()
     }
 }

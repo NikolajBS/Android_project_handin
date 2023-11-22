@@ -1,6 +1,5 @@
 package com.example.android_project.screens
 
-import androidx.navigation.NavHostController
 
 // app/src/main/java/com/example/ui/navigation/Navigation.kt
 

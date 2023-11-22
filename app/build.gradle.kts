@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.example.android_project"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.android_project"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -49,10 +49,7 @@ android {
 dependencies {
 
     // nav
-    implementation ("androidx.activity:activity-compose:1.3.0")
-    implementation ("androidx.compose.ui:ui:1.0.5")
-    implementation ("androidx.compose.material:material:1.0.5")
-    implementation ("androidx.navigation:navigation-compose:2.4.0")
+    implementation ("androidx.navigation:navigation-compose:2.7.0")
     //nav stop
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")

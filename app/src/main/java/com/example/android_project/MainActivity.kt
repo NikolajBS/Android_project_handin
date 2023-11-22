@@ -11,6 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.android_project.screens.GroupEdit
+import com.example.android_project.screens.Routes
+import com.example.android_project.screens.GroupEdit
+import com.example.android_project.screens.GroupPage
+import com.example.android_project.screens.GroupNav
 import com.example.android_project.ui.theme.Android_projectTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,10 +23,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             Android_projectTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Greeting("Android")
-                }
+             GroupApp()
             }
         }
     }
@@ -29,11 +31,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun GroupApp(){
-    val navController = rememberNavController()
-
-    navHost(navController=navController , startDestination=""){
-
-    }
+    GroupNav()
 }
 
 @Composable
