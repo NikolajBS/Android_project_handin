@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="group_width">250dp</dimen>
+    <dimen name="group_width">375dp</dimen>
     <dimen name="group_height">250dp</dimen>
 
 </resources>
