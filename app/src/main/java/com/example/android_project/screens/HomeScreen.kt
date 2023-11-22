@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -25,19 +26,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.android_project.R
+import com.example.android_project.routes.Screen
 
 
 @Composable
 fun HomeScreen(navigation: NavController){
     Column(modifier = Modifier.padding(8.dp)) {
         Row {
-            Button(onClick = {  }) {
+            Button(onClick = { }) {
+                Icon(Icons.Default.Add, contentDescription = "Add")
                 Text(text = "Create group")
             }
             Spacer(modifier = Modifier.width(200.dp))
             Icon(Icons.Default.Person, contentDescription = "Profile", modifier = Modifier.size(50.dp))
         }
-
+        Button(onClick = { navigation.navigate(Screen.TransactionActivity.route) }) {
+            Text(text = "navigate to transaction activity screen")            
+        }
     }
 }
 

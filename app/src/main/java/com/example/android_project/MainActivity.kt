@@ -18,6 +18,7 @@ import com.example.android_project.ui.theme.Android_projectTheme
 import androidx.navigation.compose.rememberNavController
 import com.example.android_project.routes.Screen
 import com.example.android_project.screens.HomeScreen
+import com.example.android_project.screens.TransactionActivity
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +59,8 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
         ){
 
             composable(Screen.HomeScreen.route) { HomeScreen(navigation = navigation) }
+            composable(Screen.TransactionActivity.route) { TransactionActivity(navigation = navigation) }
+
             /*
             composable(Screen.AnotherScreen.route) { AnotherScreen(navigation = navigation)}
             composable(Screen.SwScreen.route) { SwScreen(navigation = navigation)}
