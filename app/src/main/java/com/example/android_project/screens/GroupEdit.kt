@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -19,22 +18,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.android_project.ui.theme.Android_projectTheme
+import com.example.android_project.FirebaseManager.database
+import com.example.android_project.data.GroupPerson
+import com.google.firebase.database.DatabaseReference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupEdit(navController: NavHostController) {
+fun GroupEdit(navController: NavController, groupId: String) {
     var newPerson by remember { mutableStateOf("") }
     var newAmount by remember { mutableStateOf("") }
+
+    val groupRef: DatabaseReference = database.child("groups").child(groupId)
 
     Surface(
         modifier = Modifier.fillMaxSize()
@@ -74,54 +75,44 @@ fun GroupEdit(navController: NavHostController) {
                     .padding(bottom = 16.dp)
             )
 
-            // Buttons for Delete, Add Person, Confirm
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+            // Button for Add Person
+            Button(
+                onClick = {
+                    val amount = newAmount.toDoubleOrNull() ?: 0.0
+                    val newPersonData = GroupPerson(newPerson, amount)
+
+                    // Add the new person to the Firebase database
+                    groupRef.child("people").push().setValue(newPersonData)
+
+                    // Clear the input fields
+                    newPerson = ""
+                    newAmount = ""
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
             ) {
-                Button(
-                    onClick = {
-                        // Handle delete button click
-                        // For now, you can add your logic here
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                ) {
-                    Text(text = "Delete")
-                }
+                Text(text = "Add Person")
+            }
 
-                Button(
-                    onClick = {
-                        // Handle add person button click
-                        // For now, you can add your logic here
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                ) {
-                    Text(text = "Add Person")
-                }
-
-                Button(
-                    onClick = {
-                        // Handle confirm button click
-                        // For now, navigate back to the GroupPage
-                        navController.popBackStack()
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(text = "Confirm")
-                }
+            // Button for Confirm
+            Button(
+                onClick = {
+                    // For now, navigate back to the GroupPage
+                    navController.popBackStack()
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Confirm")
             }
         }
     }
 }
 
-
 @Preview
 @Composable
 fun GroupEditPreview() {
     MaterialTheme {
-        GroupEdit(rememberNavController())
+        GroupEdit(rememberNavController(), "groupId")
     }
 }

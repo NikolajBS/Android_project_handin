@@ -1,5 +1,6 @@
 package com.example.android_project
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,28 +18,36 @@ import com.example.android_project.screens.GroupEdit
 import com.example.android_project.screens.GroupPage
 import com.example.android_project.screens.GroupNav
 import com.example.android_project.ui.theme.Android_projectTheme
+import com.google.firebase.FirebaseApp
+import com.google.firebase.database.FirebaseDatabase
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializeFirebase(applicationContext)
         setContent {
             Android_projectTheme {
-             GroupApp()
+                GroupApp()
             }
         }
     }
 }
 
-@Composable
-fun GroupApp(){
-    GroupNav()
+
+private fun initializeFirebase(context: Context) {
+    // Initialize Firebase
+    FirebaseApp.initializeApp(context)
+    // Optionally, set the database persistence (offline mode)
+    FirebaseDatabase.getInstance().setPersistenceEnabled(true)
 }
+
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-            text = "Hello $name!",
-            modifier = modifier
+        text = "Hello $name!",
+        modifier = modifier
     )
 }
 
