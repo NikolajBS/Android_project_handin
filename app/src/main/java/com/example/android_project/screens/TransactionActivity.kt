@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -22,7 +23,7 @@ import com.example.android_project.routes.Screen
 
 @Composable
 fun TransactionActivity(navigation: NavHostController){
-    Column {
+    Column (modifier = Modifier.padding(15.dp)) {
         ListActivities()
 
         Spacer(modifier = Modifier.height(300.dp))
@@ -41,8 +42,11 @@ fun ListActivities() {
                 width = dimensionResource(id = R.dimen.act_width),
                 height = dimensionResource(id = R.dimen.act_height)
             )
+            .padding(10.dp),
+        contentAlignment = Alignment.CenterStart
+
     ) {
-        Text(text = "You paid 500kr", fontSize = 30.sp, modifier = Modifier.align(Alignment.Center))
+        Text(text = "You paid 500kr", fontSize = 30.sp)
     }
     Spacer(modifier = Modifier.height(20.dp))
     Box(modifier = Modifier.background(colorResource(id = R.color.gray))) {
