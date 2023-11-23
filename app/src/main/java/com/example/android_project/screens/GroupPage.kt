@@ -35,7 +35,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_project.FirebaseManager
 import com.example.android_project.data.GroupPerson
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -63,7 +66,11 @@ fun GroupPage(navController: NavController, groupId: String) {
         }
 
         // Calculate owed amount (customize this logic based on your requirements)
-        owedAmount = totalAmount / groupSnapshot.child("people").childrenCount
+        owedAmount = if (groupMembers.isNotEmpty()) {
+            totalAmount / groupMembers.size
+        } else {
+            0.0
+        }
     }
 
     Box(
@@ -95,7 +102,9 @@ fun GroupPage(navController: NavController, groupId: String) {
 
             // Display group members
             for (member in groupMembers) {
-                GroupMemberItem(member)
+                GroupMemberItem(member, onRemoveMemberClick = {
+                    removeMemberFromGroup(groupId, member)
+                })
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
@@ -115,7 +124,7 @@ fun GroupPage(navController: NavController, groupId: String) {
 }
 
 @Composable
-fun GroupMemberItem(member: GroupPerson?) {
+fun GroupMemberItem(member: GroupPerson?, onRemoveMemberClick: () -> Unit) {
     member?.let {
         // Rectangular Box with Text Elements for each group member
         Box(
@@ -147,9 +156,38 @@ fun GroupMemberItem(member: GroupPerson?) {
                         color = Color.Black
                     )
                 }
+
+                // Button to remove the member
+                Button(
+                    onClick = { onRemoveMemberClick() },
+                    modifier = Modifier
+                        .height(60.dp)
+                        .padding(8.dp),
+                ) {
+                    Text(text = "Remove")
+                }
             }
         }
     }
+}
+
+private fun removeMemberFromGroup(groupId: String, member: GroupPerson) {
+    val groupRef = FirebaseManager.database.child("groups").child(groupId)
+
+    // Remove the member from the "people" node in the database
+    groupRef.child("people").orderByChild("name").equalTo(member.name).addListenerForSingleValueEvent(
+        object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (childSnapshot in snapshot.children) {
+                    childSnapshot.ref.removeValue()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("GroupPage", "Error removing member: ${error.message}")
+            }
+        }
+    )
 }
 
 @Preview
