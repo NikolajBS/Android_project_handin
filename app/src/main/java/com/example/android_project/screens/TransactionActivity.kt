@@ -32,27 +32,21 @@ fun TransactionActivity(navigation: NavHostController){
 }
 
 @Composable
-fun ListActivities() {
-    Box(
-        modifier = Modifier
-            .background(colorResource(id = R.color.gray))
-            .size(
-                width = dimensionResource(id = R.dimen.act_width),
-                height = dimensionResource(id = R.dimen.act_height)
-            )
-            .padding(10.dp),
-        contentAlignment = Alignment.CenterStart
+fun ListActivities() { //Make it retrive data from firebase and color the amount
+    for(i in 1..8) {
+        Box(
+            modifier = Modifier
+                .background(colorResource(id = R.color.gray))
+                .size(
+                    width = dimensionResource(id = R.dimen.act_width),
+                    height = dimensionResource(id = R.dimen.act_height)
+                )
+                .padding(10.dp),
+            contentAlignment = Alignment.CenterStart
 
-    ) {
-        Text(text = "You paid 500kr", fontSize = 30.sp)
+        ) {
+            Text(text = "You paid 500kr", fontSize = 30.sp)
+        }
+        Spacer(modifier = Modifier.height(20.dp))
     }
-    Spacer(modifier = Modifier.height(20.dp))
-    Box(modifier = Modifier.background(colorResource(id = R.color.gray))) {
-        Text(text = "You paid 500kr", fontSize = 30.sp)
-    }
-    Spacer(modifier = Modifier.height(20.dp))
-    Box(modifier = Modifier.background(colorResource(id = R.color.gray))) {
-        Text(text = "You paid 500kr", fontSize = 30.sp)
-    }
-    Spacer(modifier = Modifier.height(20.dp))
 }
