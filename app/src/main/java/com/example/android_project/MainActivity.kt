@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -69,28 +70,40 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .background(colorResource(id = R.color.gray))
-                .height(56.dp)
+                .height(70.dp)
         )
         {
             NavigationBarItem(
                 selected = false,
                 onClick = { navigation.navigate(Screen.TransactionActivity.route) },
                 icon = {
-                    Icon(
-                        Icons.Default.Star,
-                        contentDescription = "Profile",
-                        modifier = Modifier.size(50.dp)
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Star,
+                            contentDescription = "Activity",
+                            modifier = Modifier.size(45.dp)
+                        )
+                        Text(text = "Activity")
+                    }
                 })
             NavigationBarItem(
                 selected = false,
                 onClick = { navigation.navigate(Screen.HomeScreen.route) },
                 icon = {
-                    Icon(
-                        Icons.Default.Home,
-                        contentDescription = "Profile",
-                        modifier = Modifier.size(50.dp)
-                    )
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Home,
+                            contentDescription = "Home",
+                            modifier = Modifier.size(45.dp)
+                        )
+                        Text(text = "Home")
+                    }
                 })
             }
         }
