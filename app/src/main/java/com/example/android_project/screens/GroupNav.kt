@@ -18,7 +18,7 @@ fun GroupNav(){
             GroupPage(navController, "groupId")  // Pass the actual groupId
         }
         composable(Routes.HOME_SCREEN){
-            HomeScreen(navigation = navController)
+            HomeScreen( navController)
         }
         composable(Routes.TRANSACTION_SCREEN){
             TransactionActivity(navigation = navController)

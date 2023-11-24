@@ -30,7 +30,7 @@ import com.example.android_project.routes.Screen
 
 
 @Composable
-fun HomeScreen(navigation: NavController){
+fun HomeScreen(navController: NavController){
     Column(modifier = Modifier.padding(8.dp)) {
         Row {
             Button(onClick = { }) {
@@ -40,7 +40,7 @@ fun HomeScreen(navigation: NavController){
             Spacer(modifier = Modifier.width(200.dp))
             Icon(Icons.Default.Person, contentDescription = "Profile", modifier = Modifier.size(50.dp))
         }
-        Button(onClick = { navigation.navigate(Screen.TransactionActivity.route) }) {
+        Button(onClick = { navController.navigate(Screen.TransactionActivity.route) }) {
             Text(text = "navigate to transaction activity screen")            
         }
     }
