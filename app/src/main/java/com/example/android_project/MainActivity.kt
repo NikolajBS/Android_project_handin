@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Android_projectTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    Navigation()
+                    HomeScreen()
                 }
             }
         }
@@ -41,20 +41,6 @@ private fun initializeFirebase(context: Context) {
     FirebaseDatabase.getInstance().setPersistenceEnabled(true)
 }
 
-@Composable
-fun Navigation() {
-    val navigation = rememberNavController()
-
-    Column {
-        NavHost(
-            navController = navigation,
-            startDestination = Screen.HomeScreen.route
-        ) {
-            composable(Screen.HomeScreen.route) { HomeScreen(navigation = navigation) }
-            composable(Screen.TransactionActivity.route) { TransactionActivity(navigation = navigation) }
-        }
-    }
-}
 
 @Preview(showBackground = true)
 @Composable

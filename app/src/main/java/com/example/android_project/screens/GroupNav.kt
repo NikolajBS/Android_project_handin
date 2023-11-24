@@ -13,9 +13,15 @@ import com.example.android_project.screens.GroupPage
 fun GroupNav(){
     val navController = rememberNavController()
 
-    NavHost(navController=navController , startDestination= Routes.GROUP_SCREEN){
+    NavHost(navController=navController , startDestination= Routes.HOME_SCREEN){
         composable(Routes.GROUP_SCREEN){
             GroupPage(navController, "groupId")  // Pass the actual groupId
+        }
+        composable(Routes.HOME_SCREEN){
+            HomeScreen(navigation = navController)
+        }
+        composable(Routes.TRANSACTION_SCREEN){
+            TransactionActivity(navigation = navController)
         }
 
         composable(Routes.EDIT_SCREEN){
