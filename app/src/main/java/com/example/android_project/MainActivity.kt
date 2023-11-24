@@ -32,6 +32,7 @@ import com.example.android_project.ui.theme.Android_projectTheme
 import androidx.navigation.compose.rememberNavController
 import com.example.android_project.routes.Screen
 import com.example.android_project.screens.HomeScreen
+import com.example.android_project.screens.SettingsScreen
 import com.example.android_project.screens.TransactionActivity
 
 class MainActivity : ComponentActivity() {
@@ -55,8 +56,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-            text = "Hello $name!",
-            modifier = modifier
+        text = "Hello $name!",
+        modifier = modifier
     )
 }
 
@@ -105,8 +106,8 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
                         Text(text = "Home")
                     }
                 })
-            }
         }
+    }
     Column {
         NavHost(
             navController = navigation,
@@ -115,6 +116,7 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
 
             composable(Screen.HomeScreen.route) { HomeScreen(navigation = navigation) }
             composable(Screen.TransactionActivity.route) { TransactionActivity(navigation = navigation) }
+            composable(Screen.SettingsScreen.route) { SettingsScreen(navigation = navigation) }
 
             /*
             composable(Screen.AnotherScreen.route) { AnotherScreen(navigation = navigation)}
