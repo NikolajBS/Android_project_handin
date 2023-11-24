@@ -26,14 +26,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.android_project.R
-import com.example.android_project.routes.Screen
 
 
 @Composable
 fun HomeScreen(navController: NavController){
     Column(modifier = Modifier.padding(8.dp)) {
         Row {
-            Button(onClick = { }) {
+            Button(onClick = { navController.navigate(Routes.EDIT_SCREEN) }) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
                 Text(text = "Create group")
             }

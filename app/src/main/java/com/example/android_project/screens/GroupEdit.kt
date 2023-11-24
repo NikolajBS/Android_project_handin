@@ -99,7 +99,7 @@ fun GroupEdit(navController: NavController, groupId: String) {
             Button(
                 onClick = {
                     // For now, navigate back to the GroupPage
-                    navController.popBackStack()
+                    navController.navigate(Routes.GROUP_SCREEN)
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
