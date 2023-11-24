@@ -41,7 +41,7 @@ fun HomeScreen(navController: NavController){
             Icon(Icons.Default.Person, contentDescription = "Profile", modifier = Modifier.size(50.dp))
         }
 
-        Button(onClick = { navController.navigate(Screen.TransactionActivity.route) }) {
+        Button(onClick = { navController.navigate(Routes.TRANSACTION_SCREEN) }) {
             Text(text = "navigate to transaction activity screen")            
         }
 

@@ -23,7 +23,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.android_project.ui.theme.Android_projectTheme
-import com.example.android_project.routes.Screen
+//import com.example.android_project.routes.Screen
+import com.example.android_project.screens.GroupNav
 import com.example.android_project.screens.HomeScreen
 import com.example.android_project.screens.TransactionActivity
 import com.google.firebase.FirebaseApp
@@ -39,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Navigation()
+                    GroupNav()
                 }
             }
         }
@@ -57,55 +58,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         text = "Hello $name!",
         modifier = modifier
     )
-}
-
-@Composable
-fun Navigation() {
-    val navigation = rememberNavController()
-
-    Column {
-        NavHost(
-            navController = navigation,
-            startDestination = Screen.HomeScreen.route
-        ) {
-            composable(Screen.HomeScreen.route) { HomeScreen(navigation = navigation) }
-            composable(Screen.TransactionActivity.route) { TransactionActivity(navigation = navigation) }
-        }
-
-        // BottomAppBar with NavigationBarItem
-        BottomAppBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(colorResource(id = R.color.gray))
-                .height(56.dp),
-            content = {
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navigation.navigate(Screen.TransactionActivity.route) },
-                    icon = {
-                        Icon(
-                            Icons.Default.Star,
-                            contentDescription = "Profile",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    },
-                    label = { Text("Profile") }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { navigation.navigate(Screen.HomeScreen.route) },
-                    icon = {
-                        Icon(
-                            Icons.Default.Home,
-                            contentDescription = "Home",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    },
-                    label = { Text("Home") }
-                )
-            }
-        )
-    }
 }
 
 @Preview(showBackground = true)

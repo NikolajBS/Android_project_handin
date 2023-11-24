@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.android_project.R
-import com.example.android_project.routes.Screen
+//import com.example.android_project.routes.Screen
 
 @Composable
 fun TransactionActivity(navigation: NavHostController){
