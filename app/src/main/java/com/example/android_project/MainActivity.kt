@@ -4,15 +4,21 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -29,8 +35,11 @@ class MainActivity : ComponentActivity() {
         initializeFirebase(applicationContext)
         setContent {
             Android_projectTheme {
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    HomeScreen()
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    Navigation()
                 }
             }
         }
@@ -42,11 +51,67 @@ private fun initializeFirebase(context: Context) {
     FirebaseDatabase.getInstance().setPersistenceEnabled(true)
 }
 
+@Composable
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
+}
+
+@Composable
+fun Navigation() {
+    val navigation = rememberNavController()
+
+    Column {
+        NavHost(
+            navController = navigation,
+            startDestination = Screen.HomeScreen.route
+        ) {
+            composable(Screen.HomeScreen.route) { HomeScreen(navigation = navigation) }
+            composable(Screen.TransactionActivity.route) { TransactionActivity(navigation = navigation) }
+        }
+
+        // BottomAppBar with NavigationBarItem
+        BottomAppBar(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(colorResource(id = R.color.gray))
+                .height(56.dp),
+            content = {
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { navigation.navigate(Screen.TransactionActivity.route) },
+                    icon = {
+                        Icon(
+                            Icons.Default.Star,
+                            contentDescription = "Profile",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    },
+                    label = { Text("Profile") }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { navigation.navigate(Screen.HomeScreen.route) },
+                    icon = {
+                        Icon(
+                            Icons.Default.Home,
+                            contentDescription = "Home",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    },
+                    label = { Text("Home") }
+                )
+            }
+        )
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     Android_projectTheme {
-     //   Greeting("Android")
+        // Greeting("Android")
     }
 }
