@@ -73,7 +73,7 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
         )
         {
             NavigationBarItem(
-                selected = true,
+                selected = false,
                 onClick = { navigation.navigate(Screen.TransactionActivity.route) },
                 icon = {
                     Icon(
@@ -83,7 +83,7 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
                     )
                 })
             NavigationBarItem(
-                selected = true,
+                selected = false,
                 onClick = { navigation.navigate(Screen.HomeScreen.route) },
                 icon = {
                     Icon(

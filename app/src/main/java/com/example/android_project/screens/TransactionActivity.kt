@@ -27,9 +27,7 @@ fun TransactionActivity(navigation: NavHostController){
         ListActivities()
 
         Spacer(modifier = Modifier.height(300.dp))
-        Button(onClick = { navigation.navigate(Screen.HomeScreen.route) }) {
-            Text(text = "To the home screen")
-        }
+
     }
 }
 
