@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -7,6 +8,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -15,10 +18,29 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
     var password by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
 
-    fun isUserValid(email: String, password: String): Boolean {
-        // Replace this with your actual authentication logic
-        return email == "user" && password == "6123"
+    val auth = FirebaseAuth.getInstance()
+
+    fun loginUser(email: String, password: String) {
+        try {
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        onLoginSuccess()
+                        saveUserData(email, password) // Call function to save data
+                    } else {
+                        // Log the specific error message from Firebase
+                        Log.e("LoginError", "Error during login: ${task.exception?.message}")
+                        showError = true
+                    }
+                }
+        } catch (e: Exception) {
+            // Log the exception
+            Log.e("LoginError", "Error during login", e)
+            showError = true
+        }
     }
+
+
 
     Box(
         contentAlignment = Alignment.TopCenter,
@@ -33,7 +55,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 .wrapContentHeight(),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
 
-        ) {
+            ) {
             Column(
                 modifier = Modifier
                     .padding(16.dp),
@@ -77,16 +99,14 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                 // Login Button
                 Button(
                     onClick = {
-                        if (isUserValid(email, password)) {
-                            onLoginSuccess()
-                        } else {
-                            showError = true
-                        }
+                        loginUser(email, password)
                     },
+
                     modifier = Modifier
                         .padding(horizontal = 50.dp)
                         .height(48.dp)
-                ) {
+                )
+                {
                     Text("Login")
                 }
             }
@@ -99,3 +119,18 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
 fun LoginScreenPreview() {
     LoginScreen(onLoginSuccess = { /* Navigate to home page */ })
 }
+fun saveUserData(email: String, password: String) {
+    val database = FirebaseDatabase.getInstance()
+    val ref = database.getReference("users")
+
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
+    userId?.let {
+        ref.child(it).setValue(User(email, password)).addOnFailureListener { e ->
+            // Handle any errors here
+            Log.e("FirebaseError", "Error saving user data", e)
+        }
+    }
+}
+
+// com.company.login.ui.theme.screens.User data model
+data class User(val email: String, val password: String)
