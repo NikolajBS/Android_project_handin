@@ -135,6 +135,7 @@ fun GroupEdit(navController: NavController) {
             Button(
                 onClick = {
                     // Save group details (name and description) to the Firebase database
+                    groupRef.child("id").setValue(groupId)
                     groupRef.child("name").setValue(groupName)
                     groupRef.child("description").setValue(groupDescription)
 
