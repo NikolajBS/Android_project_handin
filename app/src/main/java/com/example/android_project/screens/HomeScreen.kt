@@ -87,6 +87,7 @@ fun GroupItem(group: GroupItem, onItemClick: () -> Unit) {
             Text(text = group.description, fontSize = 16.sp)
         }
     }
+    Spacer(modifier = Modifier.height(8.dp))
 }
 
 data class GroupItem(val id: String, val name: String, val description: String)
