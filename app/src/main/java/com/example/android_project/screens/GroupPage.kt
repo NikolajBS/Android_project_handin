@@ -61,6 +61,7 @@ fun GroupPage(navController: NavController, groupId: String) {
     var groupMembers by remember { mutableStateOf<List<GroupPerson>>(emptyList()) }
     var groupName by remember { mutableStateOf("") }
     var groupDescription by remember { mutableStateOf("") }
+    var id by remember { mutableStateOf("") }
 
     LaunchedEffect(groupId) {
         // Use coroutine for database interaction
@@ -69,6 +70,7 @@ fun GroupPage(navController: NavController, groupId: String) {
         // Get group name and description
         groupName = groupSnapshot.child("name").getValue(String::class.java) ?: ""
         groupDescription = groupSnapshot.child("description").getValue(String::class.java) ?: ""
+        id = groupSnapshot.child("id").getValue(String::class.java) ?: ""
 
         // Calculate total and owed amounts based on the fetched data
         groupSnapshot.child("people").children.forEach { personSnapshot ->
