@@ -53,6 +53,7 @@ import kotlinx.coroutines.tasks.await
 
 @Composable
 fun GroupPage(navController: NavController, groupId: String) {
+    Log.d("GroupPage", "GroupPage Composable executed with groupId: $groupId")
     val groupRef = FirebaseManager.database.child("groups").child(groupId)
 
     var totalAmount by remember { mutableStateOf(0.0) }

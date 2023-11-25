@@ -37,15 +37,18 @@ import com.example.android_project.FirebaseManager
 import com.example.android_project.FirebaseManager.database
 import com.example.android_project.data.GroupPerson
 import com.google.firebase.database.DatabaseReference
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupEdit(navController: NavController, groupId: String) {
+fun GroupEdit(navController: NavController) {
     var groupName by remember { mutableStateOf("") }
     var groupDescription by remember { mutableStateOf("") }
     var newPersonName by remember { mutableStateOf("") }
     var newAmount by remember { mutableStateOf("") }
 
+    // Generate a unique ID for the group
+    val groupId = UUID.randomUUID().toString()
     val groupRef: DatabaseReference = FirebaseManager.database.child("groups").child(groupId)
 
     Surface(
@@ -135,8 +138,8 @@ fun GroupEdit(navController: NavController, groupId: String) {
                     groupRef.child("name").setValue(groupName)
                     groupRef.child("description").setValue(groupDescription)
 
-                    // For now, navigate back to the GroupPage
-                    navController.navigate(Routes.GROUP_SCREEN)
+                    // Navigate to the GroupPage with the generated groupId
+                    navController.navigate("${Routes.GROUP_SCREEN}/$groupId")
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -152,6 +155,6 @@ fun GroupEdit(navController: NavController, groupId: String) {
 @Composable
 fun GroupEditPreview() {
     MaterialTheme {
-        GroupEdit(rememberNavController(), "groupId")
+        GroupEdit(rememberNavController(),)
     }
 }

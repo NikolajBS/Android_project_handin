@@ -36,7 +36,8 @@ fun GroupNav() {
         // NavHost should be part of the Column
         NavHost(navController = navController, startDestination = Routes.HOME_SCREEN) {
             composable(Routes.GROUP_SCREEN) {
-                GroupPage(navController, "groupId")  // Pass the actual groupId
+                val groupId = navController.previousBackStackEntry?.arguments?.getString("groupId") ?: ""
+                GroupPage(navController, groupId)
             }
             composable(Routes.HOME_SCREEN) {
                 HomeScreen(navController)
@@ -45,7 +46,7 @@ fun GroupNav() {
                 TransactionActivity(navigation = navController)
             }
             composable(Routes.EDIT_SCREEN) {
-                GroupEdit(navController, "groupId")  // Pass the actual groupId
+                GroupEdit(navController)
             }
         }
 
