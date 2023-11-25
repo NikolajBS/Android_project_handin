@@ -11,12 +11,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -53,10 +58,16 @@ fun GroupPage(navController: NavController, groupId: String) {
     var totalAmount by remember { mutableStateOf(0.0) }
     var owedAmount by remember { mutableStateOf(0.0) }
     var groupMembers by remember { mutableStateOf<List<GroupPerson>>(emptyList()) }
+    var groupName by remember { mutableStateOf("") }
+    var groupDescription by remember { mutableStateOf("") }
 
     LaunchedEffect(groupId) {
         // Use coroutine for database interaction
         val groupSnapshot = groupRef.get().await()
+
+        // Get group name and description
+        groupName = groupSnapshot.child("name").getValue(String::class.java) ?: ""
+        groupDescription = groupSnapshot.child("description").getValue(String::class.java) ?: ""
 
         // Calculate total and owed amounts based on the fetched data
         groupSnapshot.child("people").children.forEach { personSnapshot ->
@@ -88,7 +99,15 @@ fun GroupPage(navController: NavController, groupId: String) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                text = "Full amount: $totalAmount kr",
+                text = "Group Details",
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                text = "Group Name: $groupName",
                 style = MaterialTheme.typography.headlineMedium
             )
 
@@ -96,7 +115,7 @@ fun GroupPage(navController: NavController, groupId: String) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                text = "You owe: $owedAmount kr",
+                text = "Group Description: $groupDescription",
                 style = MaterialTheme.typography.headlineMedium
             )
 
@@ -117,7 +136,9 @@ fun GroupPage(navController: NavController, groupId: String) {
                     .fillMaxWidth()
                     .padding(top = 16.dp)
             ) {
-                Text(text = "Edit Group")
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = "Add Person")
             }
         }
     }
@@ -161,9 +182,11 @@ fun GroupMemberItem(member: GroupPerson?, onRemoveMemberClick: () -> Unit) {
                 Button(
                     onClick = { onRemoveMemberClick() },
                     modifier = Modifier
-                        .height(60.dp)
+                        .height(40.dp)
                         .padding(8.dp),
                 ) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Remove")
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(text = "Remove")
                 }
             }
@@ -189,7 +212,6 @@ private fun removeMemberFromGroup(groupId: String, member: GroupPerson) {
         }
     )
 }
-
 @Preview
 @Composable
 fun GroupPagePreview() {
