@@ -5,5 +5,6 @@ sealed class Screen(val route: String) {
     object TransactionActivity : Screen("tranAct-screen")
     object GroupPage: Screen("Group-screen")
     object GroupEdit: Screen("Edit-screen")
-
+    object SettingsScreen : Screen("settings-screen")
+    object ProfileScreen : Screen("profile-screen")
 }

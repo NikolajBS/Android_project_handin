@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,17 +33,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.android_project.FirebaseManager
 import com.example.android_project.R
+import com.example.android_project.data.AppSettings
 import kotlinx.coroutines.tasks.await
 
-
 @Composable
-fun TransactionActivity(navigation: NavHostController){
+fun TransactionActivity(navigation: NavHostController, appSettings: MutableState<AppSettings>, onSettingsChanged: (AppSettings) -> Unit){
     val scroll = rememberScrollState()
     Column (modifier = Modifier
         .padding(15.dp)
         .height(660.dp)
         .verticalScroll(scroll)
-       )
+    )
     {
         ListActivities()
     }
@@ -71,7 +73,7 @@ fun ListActivities() {
     for(i in list) {
         Box(
             modifier = Modifier
-                .background(colorResource(id = R.color.gray), RoundedCornerShape(16.dp))
+                .background(color = MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp))
                 .size(
                     width = dimensionResource(id = R.dimen.act_width),
                     height = dimensionResource(id = R.dimen.act_height)

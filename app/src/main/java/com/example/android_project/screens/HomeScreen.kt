@@ -19,9 +19,11 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,13 +38,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.android_project.FirebaseManager
 import com.example.android_project.R
+import com.example.android_project.data.AppSettings
 import com.example.android_project.routes.Screen
 import kotlinx.coroutines.tasks.await
 
 
 @Composable
-fun HomeScreen(navigation: NavHostController) {
-
+fun HomeScreen(navigation: NavHostController, appSettings: MutableState<AppSettings>, onSettingsChanged: (AppSettings) -> Unit){
     var groups by remember { mutableStateOf<List<GroupItem>>(emptyList()) }
 
     // Fetch groups from Firebase
@@ -56,8 +58,20 @@ fun HomeScreen(navigation: NavHostController) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
                 Text(text = "Create group")
             }
-            Spacer(modifier = Modifier.width(200.dp))
-            Icon(Icons.Default.Person, contentDescription = "Profile", modifier = Modifier.size(50.dp))
+            Spacer(modifier = Modifier.width(150.dp))
+            Button(onClick = { navigation.navigate("profile-screen") }) {
+                Icon(Icons.Default.Person, contentDescription = "Profile")
+            }
+        }
+
+        // Display groups
+        LazyColumn {
+            items(groups) { group ->
+                GroupItem(group, onItemClick = {
+                    navigation.navigate(Screen.GroupPage.route + "/${group.id}")
+                })
+
+            }
         }
 
         // Display groups
@@ -77,7 +91,7 @@ fun GroupItem(group: GroupItem, onItemClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(colorResource(id = R.color.gray), RoundedCornerShape(16.dp))
+            .background(color = MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp))
             .clickable { onItemClick.invoke() } // Make the item clickable
             .padding(16.dp)
     ) {
@@ -115,7 +129,7 @@ fun CreateGroup() {
                 width = dimensionResource(R.dimen.group_width),
                 height = dimensionResource(R.dimen.group_height)
             )
-            .background(colorResource(id = R.color.gray), RoundedCornerShape(16.dp))
+            .background(color = MaterialTheme.colorScheme.onBackground, RoundedCornerShape(16.dp))
 
 
     ) {
@@ -123,7 +137,7 @@ fun CreateGroup() {
             Text(text = "You owe: 500kr", fontSize = 40.sp)
             Spacer(modifier = Modifier.height(80.dp))
             Box(modifier = Modifier
-                .background(colorResource(id = R.color.green), RoundedCornerShape(16.dp))) {
+                .background(color = MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp))) {
                 Text(text = "Pay now", fontSize = 40.sp)
             }
         }
