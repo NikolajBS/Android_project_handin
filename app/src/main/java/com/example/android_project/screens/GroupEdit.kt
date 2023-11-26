@@ -151,7 +151,7 @@ fun GroupEdit(navigation: NavHostController) {
                         groupRef.child("description").setValue(groupDescription)
 
                         // Navigate to the GroupPage with the generated groupId
-                        navigation.navigate(Screen.GrouPage.route + "/$groupId")
+                        navigation.navigate(Screen.GroupPage.route + "/$groupId")
                     } else {
                         // Show an error message or UI feedback about empty name or description
                     }

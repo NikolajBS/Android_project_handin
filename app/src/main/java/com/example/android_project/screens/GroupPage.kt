@@ -41,6 +41,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_project.FirebaseManager
 import com.example.android_project.data.GroupPerson
+import com.example.android_project.routes.Screen
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -134,7 +135,7 @@ fun GroupPage(navigation: NavHostController, groupId: String) {
             // Button to navigate to GroupEdit
             Button(
                 onClick = {
-                    navigation.navigate(Routes.EDIT_SCREEN)
+                    navigation.navigate(Screen.GroupEdit.route)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

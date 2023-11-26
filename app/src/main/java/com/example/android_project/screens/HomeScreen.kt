@@ -64,7 +64,7 @@ fun HomeScreen(navigation: NavHostController) {
         LazyColumn {
             items(groups) { group ->
                 GroupItem(group, onItemClick = {
-                    navigation.navigate(Screen.GrouPage.route + "/${group.id}")
+                    navigation.navigate(Screen.GroupPage.route + "/${group.id}")
                 })
 
             }

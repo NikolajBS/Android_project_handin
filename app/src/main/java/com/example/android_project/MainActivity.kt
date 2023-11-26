@@ -120,6 +120,12 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
                     }
                 }
             )
+            NavigationBarItem(
+                selected = false,
+                onClick = {
+                    navigation.navigate(Screen.GroupPage.route) },
+                icon = {}
+            )
         }
 
         Column {
@@ -129,7 +135,7 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
             ){
                 composable(Screen.HomeScreen.route) { HomeScreen(navigation = navigation) }
                 composable(Screen.TransactionActivity.route) { TransactionActivity(navigation = navigation) }
-                composable(Screen.GrouPage.route + "/{groupId}") { backStackEntry ->
+                composable(Screen.GroupPage.route + "/{groupId}") { backStackEntry ->
                     val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
                     GroupPage(navigation = navigation, groupId = groupId)
                 }
