@@ -47,6 +47,10 @@ fun ProfileScreen(navigation: NavController, appSettings: MutableState<AppSettin
         }) {
             if (isVisible) Text(text = "Hide Password") else Text(text = "Show Password")
         }
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(onClick = { /* Navigate to 'Edit Profile' screen */ }) {
+            Text(text = "Edit Profile")
+        }
     }
 }
 
