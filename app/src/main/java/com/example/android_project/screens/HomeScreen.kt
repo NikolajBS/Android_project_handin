@@ -45,8 +45,6 @@ import kotlinx.coroutines.tasks.await
 
 @Composable
 fun HomeScreen(navigation: NavHostController, appSettings: MutableState<AppSettings>, onSettingsChanged: (AppSettings) -> Unit){
-    var notificationsButtonText by remember { mutableStateOf(getNotificationsButtonText(appSettings)) }
-    var isDarkTheme by remember { mutableStateOf(appSettings.value.isDarkTheme) }
     var groups by remember { mutableStateOf<List<GroupItem>>(emptyList()) }
 
     // Fetch groups from Firebase
@@ -65,8 +63,6 @@ fun HomeScreen(navigation: NavHostController, appSettings: MutableState<AppSetti
                 Icon(Icons.Default.Person, contentDescription = "Profile")
             }
         }
-        Text(text = notificationsButtonText)
-        Text(text = "Dark mode = $isDarkTheme")
 
         // Display groups
         LazyColumn {
