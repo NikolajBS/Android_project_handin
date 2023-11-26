@@ -37,12 +37,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.android_project.FirebaseManager
 import com.example.android_project.FirebaseManager.database
 import com.example.android_project.data.GroupPerson
+import com.example.android_project.routes.Screen
 import com.google.firebase.database.DatabaseReference
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupEdit(navigation: NavHostController) {
+    var groupIdCounter by remember { mutableStateOf(1) }
     var groupName by remember { mutableStateOf("") }
     var groupDescription by remember { mutableStateOf("") }
     var newPersonName by remember { mutableStateOf("") }
@@ -133,15 +135,26 @@ fun GroupEdit(navigation: NavHostController) {
             }
 
             // Button for Confirm
+            // Button for Confirm
             Button(
                 onClick = {
-                    // Save group details (name and description) to the Firebase database
-                    groupRef.child("id").setValue(groupId)
-                    groupRef.child("name").setValue(groupName)
-                    groupRef.child("description").setValue(groupDescription)
+                    if (groupName.isNotEmpty() && groupDescription.isNotEmpty()) {
+                        val groupId = groupIdCounter.toString()
+                        groupIdCounter++
 
-                    // Navigate to the GroupPage with the generated groupId
-                    navigation.navigate("${Routes.GROUP_SCREEN}/$groupId")
+                        // Use groupId in your Firebase operations
+                        val groupRef: DatabaseReference = FirebaseManager.database.child("groups").child(groupId)
+
+                        // Save group details (name and description) to the Firebase database
+                        groupRef.child("id").setValue(groupId)
+                        groupRef.child("name").setValue(groupName)
+                        groupRef.child("description").setValue(groupDescription)
+
+                        // Navigate to the GroupPage with the generated groupId
+                        navigation.navigate(Screen.GrouPage.route + "/$groupId")
+                    } else {
+                        // Show an error message or UI feedback about empty name or description
+                    }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -149,6 +162,7 @@ fun GroupEdit(navigation: NavHostController) {
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(text = "Create Group")
             }
+
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.android_project
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -70,16 +71,19 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun Navigation(name: String, modifier: Modifier = Modifier) {
 
-    val navigation = rememberNavController();
+    val navigation = rememberNavController()
     Box(modifier = Modifier.fillMaxSize()) {
+        // Other content can go here
+
+        // BottomAppBar should enclose its children as direct content
         BottomAppBar(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .background(colorResource(id = R.color.gray))
                 .height(70.dp)
-        )
-        {
+        ) {
+            // NavigationBarItem items should be here, directly inside BottomAppBar
             NavigationBarItem(
                 selected = false,
                 onClick = { navigation.navigate(Screen.TransactionActivity.route) },
@@ -95,10 +99,13 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
                         )
                         Text(text = "Activity")
                     }
-                })
+                }
+            )
             NavigationBarItem(
                 selected = false,
-                onClick = { navigation.navigate(Screen.HomeScreen.route) },
+                onClick = {
+                    Log.d("Navigation", "Navigating to HomeScreen")
+                    navigation.navigate(Screen.HomeScreen.route) },
                 icon = {
                     Column (
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -111,29 +118,27 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
                         )
                         Text(text = "Home")
                     }
-                })
+                }
+            )
+        }
+
+        Column {
+            NavHost(
+                navController = navigation,
+                startDestination = Screen.HomeScreen.route
+            ){
+                composable(Screen.HomeScreen.route) { HomeScreen(navigation = navigation) }
+                composable(Screen.TransactionActivity.route) { TransactionActivity(navigation = navigation) }
+                composable(Screen.GrouPage.route + "/{groupId}") { backStackEntry ->
+                    val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
+                    GroupPage(navigation = navigation, groupId = groupId)
+                }
+                composable(Screen.GroupEdit.route) { GroupEdit(navigation = navigation) }
             }
         }
-    Column {
-        NavHost(
-            navController = navigation,
-            startDestination = Screen.HomeScreen.route
-        ){
-
-            composable(Screen.HomeScreen.route) { HomeScreen(navigation = navigation) }
-            composable(Screen.TransactionActivity.route) { TransactionActivity(navigation = navigation) }
-            composable(Screen.GrouPage.route) { GroupPage(navigation = navigation,"1") }
-            composable(Screen.GroupEdit.route) { GroupEdit(navigation = navigation) }
-
-            /*
-            composable(Screen.AnotherScreen.route) { AnotherScreen(navigation = navigation)}
-            composable(Screen.SwScreen.route) { SwScreen(navigation = navigation)}
-            */
-        }
-
     }
-
 }
+
 
 @Preview(showBackground = true)
 @Composable
