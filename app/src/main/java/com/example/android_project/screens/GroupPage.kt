@@ -136,7 +136,7 @@ fun GroupPage(navigation: NavHostController, groupId: String) {
             // Button to navigate to GroupEdit
             Button(
                 onClick = {
-                    navigation.navigate(Screen.GroupEdit.route)
+                    navigation.navigate("${Screen.GroupEdit.route}/$groupId")
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -146,6 +146,7 @@ fun GroupPage(navigation: NavHostController, groupId: String) {
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(text = "Add Person")
             }
+
         }
     }
 }
@@ -188,7 +189,7 @@ fun GroupMemberItem(member: GroupPerson?, onRemoveMemberClick: () -> Unit) {
                 Button(
                     onClick = { onRemoveMemberClick() },
                     modifier = Modifier
-                        .height(40.dp)
+                        .height(70.dp)
                         .padding(8.dp),
                 ) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Remove")

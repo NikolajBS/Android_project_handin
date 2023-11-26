@@ -21,6 +21,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,20 +40,26 @@ import com.example.android_project.FirebaseManager.database
 import com.example.android_project.data.GroupPerson
 import com.example.android_project.routes.Screen
 import com.google.firebase.database.DatabaseReference
+import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupEdit(navigation: NavHostController) {
-    var groupIdCounter by remember { mutableStateOf(1) }
+fun GroupEdit(navigation: NavHostController, groupId: String) {
     var groupName by remember { mutableStateOf("") }
     var groupDescription by remember { mutableStateOf("") }
     var newPersonName by remember { mutableStateOf("") }
     var newAmount by remember { mutableStateOf("") }
 
-    // Generate a unique ID for the group
-    val groupId = UUID.randomUUID().toString()
+    // Use the passed groupId
     val groupRef: DatabaseReference = FirebaseManager.database.child("groups").child(groupId)
+
+    // Fetch existing group name and description from the database
+    LaunchedEffect(groupId) {
+        val groupSnapshot = groupRef.get().await()
+        groupName = groupSnapshot.child("name").getValue(String::class.java) ?: ""
+        groupDescription = groupSnapshot.child("description").getValue(String::class.java) ?: ""
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -73,14 +80,15 @@ fun GroupEdit(navigation: NavHostController) {
                 style = MaterialTheme.typography.headlineMedium
             )
 
-            // Input Boxes for Group Name and Description
+            // Input Boxes for Group Name and Description with placeholders
             OutlinedTextField(
                 value = groupName,
                 onValueChange = { groupName = it },
                 label = { Text("Group Name") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp)
+                    .padding(bottom = 8.dp),
+                placeholder = { Text("Existing Group Name") }
             )
 
             OutlinedTextField(
@@ -89,7 +97,8 @@ fun GroupEdit(navigation: NavHostController) {
                 label = { Text("Group Description") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 16.dp),
+                placeholder = { Text("Existing Group Description") }
             )
 
             // Input Boxes for Extra Person and Amount
@@ -133,44 +142,15 @@ fun GroupEdit(navigation: NavHostController) {
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(text = "Add Person")
             }
-
-            // Button for Confirm
-            // Button for Confirm
-            Button(
-                onClick = {
-                    if (groupName.isNotEmpty() && groupDescription.isNotEmpty()) {
-                        val groupId = groupIdCounter.toString()
-                        groupIdCounter++
-
-                        // Use groupId in your Firebase operations
-                        val groupRef: DatabaseReference = FirebaseManager.database.child("groups").child(groupId)
-
-                        // Save group details (name and description) to the Firebase database
-                        groupRef.child("id").setValue(groupId)
-                        groupRef.child("name").setValue(groupName)
-                        groupRef.child("description").setValue(groupDescription)
-
-                        // Navigate to the GroupPage with the generated groupId
-                        navigation.navigate(Screen.GroupPage.route + "/$groupId")
-                    } else {
-                        // Show an error message or UI feedback about empty name or description
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Icon(imageVector = Icons.Default.Send, contentDescription = "Send")
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(text = "Create Group")
-            }
-
         }
     }
 }
+
 
 @Preview
 @Composable
 fun GroupEditPreview() {
     MaterialTheme {
-        GroupEdit(rememberNavController(),)
+        //GroupEdit(rememberNavController(),)
     }
 }

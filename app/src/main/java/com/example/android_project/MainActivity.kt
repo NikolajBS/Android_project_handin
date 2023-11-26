@@ -105,9 +105,10 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
                 selected = false,
                 onClick = {
                     Log.d("Navigation", "Navigating to HomeScreen")
-                    navigation.navigate(Screen.HomeScreen.route) },
+                    navigation.navigate(Screen.HomeScreen.route)
+                },
                 icon = {
-                    Column (
+                    Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
@@ -126,15 +127,19 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
             NavHost(
                 navController = navigation,
                 startDestination = Screen.HomeScreen.route
-            ){
+            ) {
                 composable(Screen.HomeScreen.route) { HomeScreen(navigation = navigation) }
                 composable(Screen.TransactionActivity.route) { TransactionActivity(navigation = navigation) }
                 composable(Screen.GroupPage.route + "/{groupId}") { backStackEntry ->
                     val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
                     GroupPage(navigation = navigation, groupId = groupId)
                 }
-                composable(Screen.GroupEdit.route) { GroupEdit(navigation = navigation) }
+                composable(Screen.GroupEdit.route + "/{groupId}") { backStackEntry ->
+                    val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
+                    GroupEdit(navigation = navigation, groupId = groupId)
+                }
             }
+
         }
     }
 }
