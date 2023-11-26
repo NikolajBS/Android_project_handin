@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_project.FirebaseManager
 import com.example.android_project.data.GroupPerson
@@ -52,7 +53,7 @@ import kotlinx.coroutines.tasks.await
 
 
 @Composable
-fun GroupPage(navController: NavController, groupId: String) {
+fun GroupPage(navigation: NavHostController, groupId: String) {
     Log.d("GroupPage", "GroupPage Composable executed with groupId: $groupId")
     val groupRef = FirebaseManager.database.child("groups").child(groupId)
 
@@ -133,7 +134,7 @@ fun GroupPage(navController: NavController, groupId: String) {
             // Button to navigate to GroupEdit
             Button(
                 onClick = {
-                    navController.navigate(Routes.EDIT_SCREEN)
+                    navigation.navigate(Routes.EDIT_SCREEN)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -220,6 +221,6 @@ private fun removeMemberFromGroup(groupId: String, member: GroupPerson) {
 fun GroupPagePreview() {
     MaterialTheme {
         val groupId = "1"
-        GroupPage(navController = rememberNavController(), groupId = groupId)
+        GroupPage(navigation = rememberNavController(), groupId = groupId)
     }
 }

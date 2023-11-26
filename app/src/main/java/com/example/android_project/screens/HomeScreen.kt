@@ -33,13 +33,15 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.android_project.FirebaseManager
 import com.example.android_project.R
+import com.example.android_project.routes.Screen
 import kotlinx.coroutines.tasks.await
 
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navigation: NavHostController) {
 
     var groups by remember { mutableStateOf<List<GroupItem>>(emptyList()) }
 
@@ -50,7 +52,7 @@ fun HomeScreen(navController: NavController) {
 
     Column(modifier = Modifier.padding(8.dp)) {
         Row {
-            Button(onClick = { navController.navigate(Routes.EDIT_SCREEN) }) {
+            Button(onClick = { navigation.navigate(Screen.GroupEdit.route) }) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
                 Text(text = "Create group")
             }
@@ -62,12 +64,12 @@ fun HomeScreen(navController: NavController) {
         LazyColumn {
             items(groups) { group ->
                 GroupItem(group, onItemClick = {
-                    navController.navigate("${Routes.GROUP_SCREEN}/${group.id}")
+                    navigation.navigate("${Routes.GROUP_SCREEN}/${group.id}")
                 })
             }
         }
 
-        Button(onClick = { navController.navigate(Routes.TRANSACTION_SCREEN) }) {
+        Button(onClick = { navigation.navigate(Screen.TransactionActivity.route) }) {
             Text(text = "navigate to transaction activity screen")
         }
     }

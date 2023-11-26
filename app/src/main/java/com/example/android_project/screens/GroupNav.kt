@@ -33,7 +33,7 @@ import com.example.android_project.screens.Routes
 import com.example.android_project.screens.GroupEdit
 import com.example.android_project.screens.GroupPage
 import kotlinx.coroutines.tasks.await
-
+/*
 @Composable
 fun GroupNav() {
     val navController = rememberNavController()
@@ -125,3 +125,5 @@ fun GroupNav() {
         )
     }
 }
+
+ */

@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_project.FirebaseManager
 import com.example.android_project.FirebaseManager.database
@@ -41,7 +42,7 @@ import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupEdit(navController: NavController) {
+fun GroupEdit(navigation: NavHostController) {
     var groupName by remember { mutableStateOf("") }
     var groupDescription by remember { mutableStateOf("") }
     var newPersonName by remember { mutableStateOf("") }
@@ -140,7 +141,7 @@ fun GroupEdit(navController: NavController) {
                     groupRef.child("description").setValue(groupDescription)
 
                     // Navigate to the GroupPage with the generated groupId
-                    navController.navigate("${Routes.GROUP_SCREEN}/$groupId")
+                    navigation.navigate("${Routes.GROUP_SCREEN}/$groupId")
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {

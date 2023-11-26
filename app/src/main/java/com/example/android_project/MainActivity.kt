@@ -27,9 +27,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.android_project.routes.Screen
+import com.example.android_project.screens.GroupEdit
+import com.example.android_project.screens.GroupPage
 import com.example.android_project.ui.theme.Android_projectTheme
 //import com.example.android_project.routes.Screen
-import com.example.android_project.screens.GroupNav
+//import com.example.android_project.screens.GroupNav
 import com.example.android_project.screens.HomeScreen
 import com.example.android_project.screens.TransactionActivity
 import com.google.firebase.FirebaseApp
@@ -45,7 +47,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    GroupNav()
+                    Navigation("name")
                 }
             }
         }
@@ -120,6 +122,8 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
 
             composable(Screen.HomeScreen.route) { HomeScreen(navigation = navigation) }
             composable(Screen.TransactionActivity.route) { TransactionActivity(navigation = navigation) }
+            composable(Screen.GrouPage.route) { GroupPage(navigation = navigation,"1") }
+            composable(Screen.GroupEdit.route) { GroupEdit(navigation = navigation) }
 
             /*
             composable(Screen.AnotherScreen.route) { AnotherScreen(navigation = navigation)}
