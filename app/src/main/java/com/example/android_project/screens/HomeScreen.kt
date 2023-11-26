@@ -35,6 +35,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.android_project.FirebaseManager
 import com.example.android_project.R
 import com.example.android_project.data.AppSettings
@@ -43,7 +44,7 @@ import kotlinx.coroutines.tasks.await
 
 
 @Composable
-fun HomeScreen(navigation: NavController, appSettings: MutableState<AppSettings>, onSettingsChanged: (AppSettings) -> Unit){
+fun HomeScreen(navigation: NavHostController, appSettings: MutableState<AppSettings>, onSettingsChanged: (AppSettings) -> Unit){
     var notificationsButtonText by remember { mutableStateOf(getNotificationsButtonText(appSettings)) }
     var isDarkTheme by remember { mutableStateOf(appSettings.value.isDarkTheme) }
     var groups by remember { mutableStateOf<List<GroupItem>>(emptyList()) }
@@ -53,7 +54,7 @@ fun HomeScreen(navigation: NavController, appSettings: MutableState<AppSettings>
         groups = fetchGroups()
     }
 
-    Column(modifier = Modifier.padding(8.dp)) {
+    Column(modifier = Modifier.padding(8.dp).height(660.dp)) {
         Row {
             Button(onClick = { navigation.navigate(Screen.GroupEdit.route) }) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
@@ -66,6 +67,16 @@ fun HomeScreen(navigation: NavController, appSettings: MutableState<AppSettings>
         }
         Text(text = notificationsButtonText)
         Text(text = "Dark mode = $isDarkTheme")
+
+        // Display groups
+        LazyColumn {
+            items(groups) { group ->
+                GroupItem(group, onItemClick = {
+                    navigation.navigate(Screen.GroupPage.route + "/${group.id}")
+                })
+
+            }
+        }
 
         // Display groups
         LazyColumn {
