@@ -120,12 +120,6 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
                     }
                 }
             )
-            NavigationBarItem(
-                selected = false,
-                onClick = {
-                    navigation.navigate(Screen.GroupPage.route) },
-                icon = {}
-            )
         }
 
         Column {

@@ -50,7 +50,7 @@ fun HomeScreen(navigation: NavHostController) {
         groups = fetchGroups()
     }
 
-    Column(modifier = Modifier.padding(8.dp)) {
+    Column(modifier = Modifier.padding(8.dp).height(660.dp)) {
         Row {
             Button(onClick = { navigation.navigate(Screen.GroupEdit.route) }) {
                 Icon(Icons.Default.Add, contentDescription = "Add")

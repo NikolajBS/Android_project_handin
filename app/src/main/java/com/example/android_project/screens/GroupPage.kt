@@ -91,7 +91,8 @@ fun GroupPage(navigation: NavHostController, groupId: String) {
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .height(660.dp)
             .verticalScroll(rememberScrollState())
     ) {
         Column(
