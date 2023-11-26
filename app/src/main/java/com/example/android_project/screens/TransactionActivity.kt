@@ -8,7 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,21 +20,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.android_project.R
-//import com.example.android_project.routes.Screen
+
 
 @Composable
 fun TransactionActivity(navigation: NavHostController){
-    Column (modifier = Modifier.padding(15.dp)) {
+    val scroll = rememberScrollState()
+    Column (modifier = Modifier
+        .padding(15.dp)
+        .height(660.dp)
+        .verticalScroll(scroll)
+       )
+    {
         ListActivities()
-
-        Spacer(modifier = Modifier.height(300.dp))
-
     }
 }
 
 @Composable
 fun ListActivities() { //Make it retrive data from firebase and color the amount
-    for(i in 1..8) {
+    for(i in 1..20) {
         Box(
             modifier = Modifier
                 .background(colorResource(id = R.color.gray))
@@ -45,7 +49,7 @@ fun ListActivities() { //Make it retrive data from firebase and color the amount
             contentAlignment = Alignment.CenterStart
 
         ) {
-            Text(text = "You paid 500kr", fontSize = 30.sp)
+            Text(text = "You paid $i kr", fontSize = 30.sp)
         }
         Spacer(modifier = Modifier.height(20.dp))
     }

@@ -69,10 +69,6 @@ fun HomeScreen(navigation: NavHostController) {
 
             }
         }
-
-        Button(onClick = { navigation.navigate(Screen.TransactionActivity.route) }) {
-            Text(text = "navigate to transaction activity screen")
-        }
     }
 }
 
