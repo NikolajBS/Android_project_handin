@@ -1,6 +1,8 @@
 package com.example.android_project
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -27,36 +29,47 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.android_project.ui.theme.Android_projectTheme
 import androidx.navigation.compose.rememberNavController
-import com.example.android_project.data_classes.AppSettings
+import com.example.android_project.data.AppSettings
 import com.example.android_project.routes.Screen
+import com.example.android_project.screens.GroupEdit
+import com.example.android_project.screens.GroupPage
 import com.example.android_project.screens.HomeScreen
 import com.example.android_project.screens.ProfileScreen
 import com.example.android_project.screens.SettingsScreen
 import com.example.android_project.screens.TransactionActivity
-
+import com.google.firebase.FirebaseApp
+import com.google.firebase.database.FirebaseDatabase
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializeFirebase(applicationContext)
 
         setContent {
             val appSettings = remember { mutableStateOf(AppSettings(isDarkTheme = false, notificationEnabled = true)) }
+
             Android_projectTheme(appSettings = appSettings) {
-                // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
                     Navigation(appSettings = appSettings)
                 }
             }
         }
     }
+}
+
+private fun initializeFirebase(context: Context) {
+    FirebaseApp.initializeApp(context)
+    FirebaseDatabase.getInstance().setPersistenceEnabled(true)
 }
 
 @Composable
@@ -72,14 +85,17 @@ fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSetti
     val navigation = rememberNavController();
 
     Box(modifier = Modifier.fillMaxSize()) {
+        // Other content can go here
+
+        // BottomAppBar should enclose its children as direct content
         BottomAppBar(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .background(color = MaterialTheme.colorScheme.secondary)
                 .height(70.dp)
-        )
-        {
+        ) {
+            // NavigationBarItem items should be here, directly inside BottomAppBar
             NavigationBarItem(
                 selected = false,
                 onClick = { navigation.navigate(Screen.TransactionActivity.route) },
@@ -95,10 +111,13 @@ fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSetti
                         )
                         Text(text = "Activity")
                     }
-                })
+                }
+            )
             NavigationBarItem(
                 selected = false,
-                onClick = { navigation.navigate(Screen.HomeScreen.route) },
+                onClick = {
+                    Log.d("Navigation", "Navigating to HomeScreen")
+                    navigation.navigate(Screen.HomeScreen.route) },
                 icon = {
                     Column (
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -111,7 +130,8 @@ fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSetti
                         )
                         Text(text = "Home")
                     }
-                })
+                }
+            )
             NavigationBarItem(
                 selected = false,
                 onClick = { navigation.navigate(Screen.SettingsScreen.route) },
@@ -127,9 +147,11 @@ fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSetti
                         )
                         Text(text = "Settings")
                     }
-                })
+                }
+            )
         }
     }
+
     Column {
         NavHost(
             navController = navigation,
@@ -148,6 +170,11 @@ fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSetti
                     appSettings.value = it
                 }
             }
+            composable(Screen.GroupPage.route + "/{groupId}") { backStackEntry ->
+                val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
+                GroupPage(navigation = navigation, groupId = groupId)
+            }
+            composable(Screen.GroupEdit.route) { GroupEdit(navigation = navigation) }
             composable(Screen.SettingsScreen.route) {
                 SettingsScreen(navigation = navigation, appSettings = appSettings) {
                     // Update appSettings when needed

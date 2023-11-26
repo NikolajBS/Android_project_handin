@@ -1,6 +1,7 @@
 package com.example.android_project.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -19,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,35 +35,83 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.android_project.FirebaseManager
 import com.example.android_project.R
-import com.example.android_project.data_classes.AppSettings
+import com.example.android_project.data.AppSettings
 import com.example.android_project.routes.Screen
+import kotlinx.coroutines.tasks.await
 
 
 @Composable
 fun HomeScreen(navigation: NavController, appSettings: MutableState<AppSettings>, onSettingsChanged: (AppSettings) -> Unit){
     var notificationsButtonText by remember { mutableStateOf(getNotificationsButtonText(appSettings)) }
     var isDarkTheme by remember { mutableStateOf(appSettings.value.isDarkTheme) }
+    var groups by remember { mutableStateOf<List<GroupItem>>(emptyList()) }
+
+    // Fetch groups from Firebase
+    LaunchedEffect(true) {
+        groups = fetchGroups()
+    }
 
     Column(modifier = Modifier.padding(8.dp)) {
         Row {
-            Button(onClick = { }) {
+            Button(onClick = { navigation.navigate(Screen.GroupEdit.route) }) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
                 Text(text = "Create group")
             }
-            Spacer(modifier = Modifier.width(200.dp))
-            Icon(Icons.Default.Person, contentDescription = "Profile", modifier = Modifier.size(50.dp))
+            Spacer(modifier = Modifier.width(150.dp))
+            Button(onClick = { navigation.navigate("profile-screen") }) {
+                Icon(Icons.Default.Person, contentDescription = "Profile")
+            }
         }
         Text(text = notificationsButtonText)
-        Text(text = "Dark theme = $isDarkTheme")
-        Row {
-            Button(onClick = { navigation.navigate("profile-screen") }) {
-                Icon(Icons.Default.Person, contentDescription = "Profile", modifier = Modifier.size(24.dp))
-                Text(text = "Profile screen")
+        Text(text = "Dark mode = $isDarkTheme")
+
+        // Display groups
+        LazyColumn {
+            items(groups) { group ->
+                GroupItem(group, onItemClick = {
+                    navigation.navigate(Screen.GroupPage.route + "/${group.id}")
+                })
+
             }
-            Spacer(modifier = Modifier.width(200.dp))
         }
     }
+}
+
+@Composable
+fun GroupItem(group: GroupItem, onItemClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp))
+            .clickable { onItemClick.invoke() } // Make the item clickable
+            .padding(16.dp)
+    ) {
+        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = group.name, fontSize = 20.sp)
+            Text(text = group.description, fontSize = 16.sp)
+        }
+    }
+    Spacer(modifier = Modifier.height(8.dp))
+}
+
+data class GroupItem(val id: String, val name: String, val description: String)
+
+// Function to fetch groups from Firebase
+suspend fun fetchGroups(): List<GroupItem> {
+    val groups = mutableListOf<GroupItem>()
+
+    // Replace this with your logic to fetch groups from Firebase
+    val groupsSnapshot = FirebaseManager.database.child("groups").get().await()
+    groupsSnapshot.children.forEach { groupSnapshot ->
+        val groupId = groupSnapshot.key ?: ""
+        val groupName = groupSnapshot.child("name").getValue(String::class.java) ?: ""
+        val groupDescription = groupSnapshot.child("description").getValue(String::class.java) ?: ""
+        groups.add(GroupItem(groupId, groupName, groupDescription))
+    }
+
+    return groups
 }
 
 @Composable

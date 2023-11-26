@@ -1,4 +1,4 @@
-package com.example.android_project.data_classes
+package com.example.android_project.data
 
 // Define the AppSettings data class
 data class AppSettings(
