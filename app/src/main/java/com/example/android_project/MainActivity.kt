@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
@@ -21,6 +22,9 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -30,23 +34,25 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.android_project.ui.theme.Android_projectTheme
 import androidx.navigation.compose.rememberNavController
+import com.example.android_project.data_classes.AppSettings
 import com.example.android_project.routes.Screen
 import com.example.android_project.screens.HomeScreen
+import com.example.android_project.screens.ProfileScreen
 import com.example.android_project.screens.SettingsScreen
 import com.example.android_project.screens.TransactionActivity
+
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            Android_projectTheme {
+            val appSettings = remember { mutableStateOf(AppSettings(isDarkTheme = false, notificationEnabled = true)) }
+            Android_projectTheme(appSettings = appSettings) {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    //Greeting("Android")
-                    Navigation(name = "testing")
-                    //Button(onClick = { /*TODO*/ }) {
-                    //    Text(text = "something")
-                    //}
+                    Navigation(appSettings = appSettings)
                 }
             }
         }
@@ -62,15 +68,15 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun Navigation(name: String, modifier: Modifier = Modifier) {
-
+fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSettings>) {
     val navigation = rememberNavController();
+
     Box(modifier = Modifier.fillMaxSize()) {
         BottomAppBar(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .background(colorResource(id = R.color.gray))
+                .background(color = MaterialTheme.colorScheme.secondary)
                 .height(70.dp)
         )
         {
@@ -106,6 +112,22 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
                         Text(text = "Home")
                     }
                 })
+            NavigationBarItem(
+                selected = false,
+                onClick = { navigation.navigate(Screen.SettingsScreen.route) },
+                icon = {
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = "Settings",
+                            modifier = Modifier.size(45.dp)
+                        )
+                        Text(text = "Settings")
+                    }
+                })
         }
     }
     Column {
@@ -114,25 +136,44 @@ fun Navigation(name: String, modifier: Modifier = Modifier) {
             startDestination = Screen.HomeScreen.route
         ){
 
-            composable(Screen.HomeScreen.route) { HomeScreen(navigation = navigation) }
-            composable(Screen.TransactionActivity.route) { TransactionActivity(navigation = navigation) }
-            composable(Screen.SettingsScreen.route) { SettingsScreen(navigation = navigation) }
-
+            composable(Screen.HomeScreen.route) {
+                HomeScreen(navigation = navigation, appSettings = appSettings) {
+                    // Update appSettings when needed
+                    appSettings.value = it
+                }
+            }
+            composable(Screen.TransactionActivity.route) {
+                TransactionActivity(navigation = navigation, appSettings = appSettings) {
+                    // Update appSettings when needed
+                    appSettings.value = it
+                }
+            }
+            composable(Screen.SettingsScreen.route) {
+                SettingsScreen(navigation = navigation, appSettings = appSettings) {
+                    // Update appSettings when needed
+                    appSettings.value = it
+                }
+            }
+            composable(Screen.ProfileScreen.route) {
+                ProfileScreen(navigation = navigation, appSettings = appSettings) {
+                    // Update appSettings when needed
+                    appSettings.value = it
+                }
+            }
             /*
             composable(Screen.AnotherScreen.route) { AnotherScreen(navigation = navigation)}
             composable(Screen.SwScreen.route) { SwScreen(navigation = navigation)}
             */
         }
-
     }
-
 }
 
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    Android_projectTheme {
+    val appSettings = remember { mutableStateOf(AppSettings(isDarkTheme = false, notificationEnabled = true)) }
+    Android_projectTheme(appSettings = appSettings) {
         Greeting("Android")
     }
 }

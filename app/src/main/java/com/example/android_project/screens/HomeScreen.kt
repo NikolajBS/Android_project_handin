@@ -16,8 +16,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -26,11 +32,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.android_project.R
+import com.example.android_project.data_classes.AppSettings
 import com.example.android_project.routes.Screen
 
 
 @Composable
-fun HomeScreen(navigation: NavController){
+fun HomeScreen(navigation: NavController, appSettings: MutableState<AppSettings>, onSettingsChanged: (AppSettings) -> Unit){
+    var notificationsButtonText by remember { mutableStateOf(getNotificationsButtonText(appSettings)) }
+    var isDarkTheme by remember { mutableStateOf(appSettings.value.isDarkTheme) }
+
     Column(modifier = Modifier.padding(8.dp)) {
         Row {
             Button(onClick = { }) {
@@ -40,11 +50,14 @@ fun HomeScreen(navigation: NavController){
             Spacer(modifier = Modifier.width(200.dp))
             Icon(Icons.Default.Person, contentDescription = "Profile", modifier = Modifier.size(50.dp))
         }
-        Button(onClick = { navigation.navigate(Screen.TransactionActivity.route) }) {
-            Text(text = "navigate to transaction activity screen")
-        }
-        Button(onClick = { navigation.navigate(Screen.SettingsScreen.route) }) {
-            Text(text = "Settings Screen")
+        Text(text = notificationsButtonText)
+        Text(text = "Dark theme = $isDarkTheme")
+        Row {
+            Button(onClick = { navigation.navigate("profile-screen") }) {
+                Icon(Icons.Default.Person, contentDescription = "Profile", modifier = Modifier.size(24.dp))
+                Text(text = "Profile screen")
+            }
+            Spacer(modifier = Modifier.width(200.dp))
         }
     }
 }
@@ -57,7 +70,7 @@ fun CreateGroup() {
                 width = dimensionResource(R.dimen.group_width),
                 height = dimensionResource(R.dimen.group_height)
             )
-            .background(colorResource(id = R.color.gray), RoundedCornerShape(16.dp))
+            .background(color = MaterialTheme.colorScheme.onBackground, RoundedCornerShape(16.dp))
 
 
     ) {
@@ -65,7 +78,7 @@ fun CreateGroup() {
             Text(text = "You owe: 500kr", fontSize = 40.sp)
             Spacer(modifier = Modifier.height(80.dp))
             Box(modifier = Modifier
-                .background(colorResource(id = R.color.green), RoundedCornerShape(16.dp))) {
+                .background(color = MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp))) {
                 Text(text = "Pay now", fontSize = 40.sp)
             }
         }
