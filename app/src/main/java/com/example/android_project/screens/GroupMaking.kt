@@ -21,7 +21,7 @@ import com.example.android_project.data.GroupPerson
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupMakingScreen(navController: NavHostController) {
+fun GroupMaking(navigation: NavHostController) {
     var groupName by remember { mutableStateOf("") }
     val groupMembers = remember { mutableStateListOf<GroupPerson>() }
     var newMemberName by remember { mutableStateOf("") }
@@ -90,5 +90,5 @@ fun GroupMakingScreen(navController: NavHostController) {
 @Preview
 @Composable
 fun GroupMakingScreenPreview() {
-    GroupMakingScreen(navController = rememberNavController())
+    GroupMaking(navigation = rememberNavController())
 }
