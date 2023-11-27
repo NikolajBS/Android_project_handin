@@ -8,12 +8,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.example.android_project.routes.Screen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(onLoginSuccess: () -> Unit) {
+fun LoginScreen(navigation: NavHostController) {//,onLoginSuccess: () -> Unit
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
@@ -25,8 +27,9 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        onLoginSuccess()
+                        //onLoginSuccess()
                         saveUserData(email, password) // Call function to save data
+                        navigation.navigate(Screen.HomeScreen.route)
                     } else {
                         // Log the specific error message from Firebase
                         Log.e("LoginError", "Error during login: ${task.exception?.message}")
@@ -117,7 +120,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
 @Preview
 @Composable
 fun LoginScreenPreview() {
-    LoginScreen(onLoginSuccess = { /* Navigate to home page */ })
+    //LoginScreen(onLoginSuccess = { /* Navigate to home page */ })
 }
 fun saveUserData(email: String, password: String) {
     val database = FirebaseDatabase.getInstance()

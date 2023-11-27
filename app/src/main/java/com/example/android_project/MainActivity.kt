@@ -176,7 +176,7 @@ fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSetti
     Column {
         NavHost(
             navController = navigation,
-            startDestination = Screen.HomeScreen.route
+            startDestination = Screen.Login.route
         ){
 
             composable(Screen.HomeScreen.route) {
@@ -208,6 +208,7 @@ fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSetti
                     appSettings.value = it
                 }
             }
+            composable(Screen.Login.route){LoginScreen(navigation = navigation)}
 
         }
     }
