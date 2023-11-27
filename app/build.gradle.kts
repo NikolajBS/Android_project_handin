@@ -53,6 +53,8 @@ dependencies {
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-database-ktx:20.3.0") // Use the desired version
+    implementation("com.google.firebase:firebase-auth:22.3.0")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
     // nav
     implementation ("androidx.navigation:navigation-compose:2.7.0")
     //nav stop

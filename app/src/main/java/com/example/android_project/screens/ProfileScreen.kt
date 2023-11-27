@@ -1,5 +1,6 @@
 package com.example.android_project.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,14 +20,51 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.android_project.data.AppSettings
+import com.example.android_project.data.User
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.database
+
 
 @Composable
 fun ProfileScreen(navigation: NavController, appSettings: MutableState<AppSettings>, onSettingsChanged: (AppSettings) -> Unit) {
+    var name by remember { mutableStateOf(TextFieldValue("")) }
+    var email by remember { mutableStateOf(TextFieldValue("")) }
+    var password by remember { mutableStateOf(TextFieldValue("")) }
+    var birthdate by remember { mutableStateOf(TextFieldValue("")) }
+    var carddetails by remember { mutableStateOf(TextFieldValue("")) }
 
     var isVisible: Boolean by remember { mutableStateOf(false) }
+
+    val database = Firebase.database
+    val userRef = FirebaseAuth.getInstance().currentUser?.uid?.let {
+        database.getReference("users").child(
+            it
+        )
+    }
+
+    userRef?.addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+            val user = dataSnapshot.getValue(User::class.java)
+            // Do something with the user data
+            if (user != null) {
+                email = TextFieldValue(user.email)
+                password = TextFieldValue(user.password)
+            }
+        }
+
+        override fun onCancelled(databaseError: DatabaseError) {
+            Log.e("ProfileScreen", "Failed to read user", databaseError.toException())
+        }
+    })
+
 
     Column(
         modifier = Modifier
@@ -37,8 +75,8 @@ fun ProfileScreen(navigation: NavController, appSettings: MutableState<AppSettin
 
     ) {
         NameBox(name = "Jens Hansen")
-        EmailBox(email = "jens.hansen@gmail.com")
-        PasswordBox(password = "P4ssw0rd", isVisible)
+        EmailBox(email = email.text)
+        PasswordBox(password = password.text, isVisible)
         BirthdateBox(date = "08/23-1989")
         CardDetailsBox(name = "Jens Hansen", type = "Visa", number = "4539 7109 0051 9030", date = "07/26", ccv = 676, billingAddress = "Emmagade 17, Odense S")
 
@@ -48,7 +86,9 @@ fun ProfileScreen(navigation: NavController, appSettings: MutableState<AppSettin
             if (isVisible) Text(text = "Hide Password") else Text(text = "Show Password")
         }
         Spacer(modifier = Modifier.height(20.dp))
-        Button(onClick = { /* Navigate to 'Edit Profile' screen */ }) {
+        Button(onClick = {
+            navigation.navigate("edit-profile-screen")
+        }) {
             Text(text = "Edit Profile")
         }
     }

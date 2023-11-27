@@ -209,6 +209,7 @@ fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSetti
                 }
             }
             composable(Screen.Login.route){LoginScreen(navigation = navigation)}
+            composable(Screen.EditProfile.route){EditProfileScreen(navigation = navigation)}
 
         }
     }
