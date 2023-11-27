@@ -7,4 +7,6 @@ sealed class Screen(val route: String) {
     object GroupEdit: Screen("Edit-screen")
     object SettingsScreen : Screen("settings-screen")
     object ProfileScreen : Screen("profile-screen")
+    object Login : Screen("login-screen")
+    object EditProfile : Screen("edit-profile-screen")
 }
