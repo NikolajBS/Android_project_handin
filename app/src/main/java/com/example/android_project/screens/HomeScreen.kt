@@ -52,7 +52,7 @@ fun HomeScreen(navigation: NavHostController, appSettings: MutableState<AppSetti
 
     Column(modifier = Modifier.padding(8.dp).height(660.dp)) {
         Row {
-            Button(onClick = { navigation.navigate(Screen.GroupEdit.route) }) {
+            Button(onClick = { navigation.navigate(Screen.GroupMaking.route) }) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
                 Text(text = "Create group")
             }
