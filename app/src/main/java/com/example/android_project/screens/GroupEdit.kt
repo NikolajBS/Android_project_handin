@@ -45,7 +45,6 @@ import java.util.UUID
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupEdit(navigation: NavHostController, groupId: String) {
-    var groupIdCounter by remember { mutableStateOf(0) }
     var groupName by remember { mutableStateOf("") }
     var groupDescription by remember { mutableStateOf("") }
     var newPersonName by remember { mutableStateOf("") }
@@ -53,8 +52,7 @@ fun GroupEdit(navigation: NavHostController, groupId: String) {
 
     // Use the passed groupId
     val groupRef: DatabaseReference = FirebaseManager.database.child("groups").child(groupId)
-    // Generate a unique ID for the group
-    val groupId = UUID.randomUUID().toString()
+
 
     // Fetch existing group name and description from the database
     LaunchedEffect(groupId) {
@@ -134,8 +132,7 @@ fun GroupEdit(navigation: NavHostController, groupId: String) {
                             val maxGroupId = snapshot.children.mapNotNull {
                                 it.child("id").getValue(String::class.java)?.toIntOrNull()
                             }.maxOrNull() ?: 0
-
-                            groupIdCounter = maxGroupId + 1
+                            
 
                             // Generate a unique ID for the group
                             val newGroupId = groupIdCounter.toString()
