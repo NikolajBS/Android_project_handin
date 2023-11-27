@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -141,6 +142,12 @@ fun GroupEdit(navigation: NavHostController, groupId: String) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(text = "Add Person")
+            }
+
+            Button(onClick = { navigation.navigate("${Screen.GroupPage.route}/$groupId") }) {
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = "confirm")
             }
         }
     }
