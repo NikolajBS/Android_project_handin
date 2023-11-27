@@ -71,16 +71,6 @@ fun HomeScreen(navigation: NavHostController, appSettings: MutableState<AppSetti
 
             }
         }
-
-        // Display groups
-        LazyColumn {
-            items(groups) { group ->
-                GroupItem(group, onItemClick = {
-                    navigation.navigate(Screen.GroupPage.route + "/${group.id}")
-                })
-
-            }
-        }
     }
 }
 
