@@ -33,17 +33,24 @@ import androidx.navigation.compose.rememberNavController
 import com.example.android_project.FirebaseManager
 import com.example.android_project.data.GroupPerson
 import com.example.android_project.routes.Screen
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupEdit(navigation: NavHostController) {
-    var groupIdCounter by remember { mutableStateOf(1) }
+    var groupIdCounter by remember { mutableStateOf(0) }
     var groupName by remember { mutableStateOf("") }
     var groupDescription by remember { mutableStateOf("") }
     var newPersonName by remember { mutableStateOf("") }
     var newAmount by remember { mutableStateOf("") }
+
+    // Generate a unique ID for the group
+    val groupId = UUID.randomUUID().toString()
+    val groupRef: DatabaseReference = FirebaseManager.database.child("groups")
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -107,19 +114,34 @@ fun GroupEdit(navigation: NavHostController) {
             Button(
                 onClick = {
                     val amount = newAmount.toDoubleOrNull() ?: 0.0
-                    val groupId = groupIdCounter.toString()
 
-                    // Generate a unique ID for the group
-                    val groupRef: DatabaseReference = FirebaseManager.database.child("groups").child(groupId)
+                    // Retrieve the current maximum groupId
+                    groupRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val maxGroupId = snapshot.children.mapNotNull {
+                                it.child("id").getValue(String::class.java)?.toIntOrNull()
+                            }.maxOrNull() ?: 0
 
-                    val newPersonData = GroupPerson(newPersonName, amount)
+                            groupIdCounter = maxGroupId + 1
 
-                    // Add the new person to the Firebase database
-                    groupRef.child("people").push().setValue(newPersonData)
+                            // Generate a unique ID for the group
+                            val newGroupId = groupIdCounter.toString()
+                            val newGroupRef: DatabaseReference = FirebaseManager.database.child("groups").child(newGroupId)
 
-                    // Clear the input fields
-                    newPersonName = ""
-                    newAmount = ""
+                            val newPersonData = GroupPerson(newPersonName, amount)
+
+                            // Add the new person to the Firebase database
+                            newGroupRef.child("people").push().setValue(newPersonData)
+
+                            // Clear the input fields
+                            newPersonName = ""
+                            newAmount = ""
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            // Handle error
+                        }
+                    })
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -134,21 +156,19 @@ fun GroupEdit(navigation: NavHostController) {
             Button(
                 onClick = {
                     if (groupName.isNotEmpty() && groupDescription.isNotEmpty()) {
-                        val groupId = groupIdCounter.toString()
-
                         // Use groupId in your Firebase operations
-                        val groupRef: DatabaseReference = FirebaseManager.database.child("groups").child(groupId)
+                        val newGroupId = groupIdCounter.toString()
+                        groupIdCounter++
+
+                        val newGroupRef: DatabaseReference = FirebaseManager.database.child("groups").child(newGroupId)
 
                         // Save group details (name and description) to the Firebase database
-                        groupRef.child("id").setValue(groupId)
-                        groupRef.child("name").setValue(groupName)
-                        groupRef.child("description").setValue(groupDescription)
+                        newGroupRef.child("id").setValue(newGroupId)
+                        newGroupRef.child("name").setValue(groupName)
+                        newGroupRef.child("description").setValue(groupDescription)
 
                         // Navigate to the GroupPage with the generated groupId
-                        navigation.navigate(Screen.GroupPage.route + "/$groupId")
-
-                        // Increment groupIdCounter for the next group
-                        groupIdCounter++
+                        navigation.navigate(Screen.GroupPage.route + "/$newGroupId")
                     } else {
                         // Show an error message or UI feedback about empty name or description
                     }
