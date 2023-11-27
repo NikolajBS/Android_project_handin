@@ -199,7 +199,13 @@ fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSetti
                 val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
                 GroupPage(navigation = navigation, groupId = groupId)
             }
-            composable(Screen.GroupEdit.route) { GroupEdit(navigation = navigation) }
+            composable(Screen.GroupEdit.route + "/{groupId}") { backStackEntry ->
+                val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
+                GroupEdit(
+                    navigation = navigation,
+                    groupId = groupId
+                )
+            }
             composable(Screen.SettingsScreen.route) {
                 SettingsScreen(navigation = navigation, appSettings = appSettings) {
                     // Update appSettings when needed

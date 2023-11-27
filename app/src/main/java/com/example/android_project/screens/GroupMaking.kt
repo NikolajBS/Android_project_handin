@@ -2,10 +2,13 @@ package com.example.android_project.screens
 
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,71 +21,153 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_project.FirebaseManager
 import com.example.android_project.data.GroupPerson
+import com.example.android_project.routes.Screen
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupMaking(navigation: NavHostController) {
+    var groupIdCounter by remember { mutableStateOf(0) }
     var groupName by remember { mutableStateOf("") }
-    val groupMembers = remember { mutableStateListOf<GroupPerson>() }
-    var newMemberName by remember { mutableStateOf("") }
-    var newMemberAmount by remember { mutableStateOf("") }
+    var groupDescription by remember { mutableStateOf("") }
+    var newPersonName by remember { mutableStateOf("") }
+    var newAmount by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Create New Group", style = MaterialTheme.typography.headlineMedium)
+    // Generate a unique ID for the group
+    val groupId = UUID.randomUUID().toString()
+    val groupRef: DatabaseReference = FirebaseManager.database.child("groups")
 
-        OutlinedTextField(
-            value = groupName,
-            onValueChange = { groupName = it },
-            label = { Text("Group Name") },
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
-        )
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            // Top Text Elements
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                text = "Edit Group",
+                style = MaterialTheme.typography.headlineMedium
+            )
 
-        groupMembers.forEach { member ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = member.name, modifier = Modifier.weight(1f))
-                Text(text = "${member.amount}", modifier = Modifier.weight(1f))
-                IconButton(onClick = { groupMembers.remove(member) }) {
-                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Remove member")
-                }
+            // Input Boxes for Group Name and Description
+            OutlinedTextField(
+                value = groupName,
+                onValueChange = { groupName = it },
+                label = { Text("Group Name") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            )
+
+            OutlinedTextField(
+                value = groupDescription,
+                onValueChange = { groupDescription = it },
+                label = { Text("Group Description") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            )
+
+            // Input Boxes for Extra Person and Amount
+            OutlinedTextField(
+                value = newPersonName,
+                onValueChange = { newPersonName = it },
+                label = { Text("New Person Name") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            )
+
+            OutlinedTextField(
+                value = newAmount,
+                onValueChange = { newAmount = it },
+                label = { Text("New Amount") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            )
+
+            // Button for Add Person
+            Button(
+                onClick = {
+                    val amount = newAmount.toDoubleOrNull() ?: 0.0
+
+                    // Retrieve the current maximum groupId
+                    groupRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val maxGroupId = snapshot.children.mapNotNull {
+                                it.child("id").getValue(String::class.java)?.toIntOrNull()
+                            }.maxOrNull() ?: 0
+
+                            groupIdCounter = maxGroupId + 1
+
+                            // Generate a unique ID for the group
+                            val newGroupId = groupIdCounter.toString()
+                            val newGroupRef: DatabaseReference = FirebaseManager.database.child("groups").child(newGroupId)
+
+                            val newPersonData = GroupPerson(newPersonName, amount)
+
+                            // Add the new person to the Firebase database
+                            newGroupRef.child("people").push().setValue(newPersonData)
+
+                            // Clear the input fields
+                            newPersonName = ""
+                            newAmount = ""
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            // Handle error
+                        }
+                    })
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp)
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = "Add Person")
             }
-        }
 
-        OutlinedTextField(
-            value = newMemberName,
-            onValueChange = { newMemberName = it },
-            label = { Text("Member Name") },
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
-        )
+            // Button for Confirm
+            Button(
+                onClick = {
+                    if (groupName.isNotEmpty() && groupDescription.isNotEmpty()) {
+                        // Use groupId in your Firebase operations
+                        val newGroupId = groupIdCounter.toString()
+                        groupIdCounter++
 
-        OutlinedTextField(
-            value = newMemberAmount,
-            onValueChange = { newMemberAmount = it },
-            label = { Text("Amount") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
-        )
+                        val newGroupRef: DatabaseReference = FirebaseManager.database.child("groups").child(newGroupId)
 
-        Button(
-            onClick = {
-                if (newMemberName.isNotBlank() && newMemberAmount.toDoubleOrNull() != null) {
-                    groupMembers.add(GroupPerson(name = newMemberName, amount = newMemberAmount.toDouble()))
-                    newMemberName = ""
-                    newMemberAmount = ""
-                }
-            },
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
-        ) {
-            Text(text = "Add Member")
-        }
+                        // Save group details (name and description) to the Firebase database
+                        newGroupRef.child("id").setValue(newGroupId)
+                        newGroupRef.child("name").setValue(groupName)
+                        newGroupRef.child("description").setValue(groupDescription)
 
-        Button(
-            onClick = {
-                // Implement logic to create a group with the entered details
-                // Navigate to the group details screen if needed
-            },
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
-        ) {
-            Text(text = "Create Group")
+                        // Navigate to the GroupPage with the generated groupId
+                        navigation.navigate(Screen.GroupPage.route + "/$newGroupId")
+                    } else {
+                        // Show an error message or UI feedback about empty name or description
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(imageVector = Icons.Default.Send, contentDescription = "Send")
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = "Create Group")
+            }
         }
     }
 }

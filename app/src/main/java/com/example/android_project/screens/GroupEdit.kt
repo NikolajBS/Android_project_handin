@@ -168,7 +168,10 @@ fun GroupEdit(navigation: NavHostController, groupId: String) {
 
             Button(onClick = { navigation.navigate("${Screen.GroupPage.route}/$groupId") }) {
                 Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = "confirm")
             }
+
         }
     }
 }
