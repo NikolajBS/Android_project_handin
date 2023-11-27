@@ -189,7 +189,7 @@ fun GroupMemberItem(member: GroupPerson?, onRemoveMemberClick: () -> Unit) {
                 Button(
                     onClick = { onRemoveMemberClick() },
                     modifier = Modifier
-                        .height(70.dp)
+                        .height(60.dp)
                         .padding(8.dp),
                 ) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "Remove")

@@ -1,6 +1,5 @@
 package com.example.android_project.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,25 +27,25 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_project.FirebaseManager
-import com.example.android_project.FirebaseManager.database
 import com.example.android_project.data.GroupPerson
 import com.example.android_project.routes.Screen
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import kotlinx.coroutines.tasks.await
+import com.google.firebase.database.ValueEventListener
 import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupEdit(navigation: NavHostController, groupId: String) {
+    var groupIdCounter by remember { mutableStateOf(0) }
     var groupName by remember { mutableStateOf("") }
     var groupDescription by remember { mutableStateOf("") }
     var newPersonName by remember { mutableStateOf("") }
@@ -54,6 +53,8 @@ fun GroupEdit(navigation: NavHostController, groupId: String) {
 
     // Use the passed groupId
     val groupRef: DatabaseReference = FirebaseManager.database.child("groups").child(groupId)
+    // Generate a unique ID for the group
+    val groupId = UUID.randomUUID().toString()
 
     // Fetch existing group name and description from the database
     LaunchedEffect(groupId) {
@@ -126,14 +127,35 @@ fun GroupEdit(navigation: NavHostController, groupId: String) {
             Button(
                 onClick = {
                     val amount = newAmount.toDoubleOrNull() ?: 0.0
-                    val newPersonData = GroupPerson(newPersonName, amount)
 
-                    // Add the new person to the Firebase database
-                    groupRef.child("people").push().setValue(newPersonData)
+                    // Retrieve the current maximum groupId
+                    groupRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val maxGroupId = snapshot.children.mapNotNull {
+                                it.child("id").getValue(String::class.java)?.toIntOrNull()
+                            }.maxOrNull() ?: 0
 
-                    // Clear the input fields
-                    newPersonName = ""
-                    newAmount = ""
+                            groupIdCounter = maxGroupId + 1
+
+                            // Generate a unique ID for the group
+                            val newGroupId = groupIdCounter.toString()
+                            val newGroupRef: DatabaseReference =
+                                FirebaseManager.database.child("groups").child(newGroupId)
+
+                            val newPersonData = GroupPerson(newPersonName, amount)
+
+                            // Add the new person to the Firebase database
+                            newGroupRef.child("people").push().setValue(newPersonData)
+
+                            // Clear the input fields
+                            newPersonName = ""
+                            newAmount = ""
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            // Handle error
+                        }
+                    })
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -146,8 +168,6 @@ fun GroupEdit(navigation: NavHostController, groupId: String) {
 
             Button(onClick = { navigation.navigate("${Screen.GroupPage.route}/$groupId") }) {
                 Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(text = "confirm")
             }
         }
     }
