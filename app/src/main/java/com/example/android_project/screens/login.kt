@@ -122,13 +122,13 @@ fun LoginScreen(navigation: NavHostController) {//,onLoginSuccess: () -> Unit
 fun LoginScreenPreview() {
     //LoginScreen(onLoginSuccess = { /* Navigate to home page */ })
 }
-fun saveUserData(email: String, password: String) {
+fun saveUserData(name: String, email: String) {
     val database = FirebaseDatabase.getInstance()
     val ref = database.getReference("users")
 
     val userId = FirebaseAuth.getInstance().currentUser?.uid
     userId?.let {
-        ref.child(it).setValue(User(email, password)).addOnFailureListener { e ->
+        ref.child(it).setValue(User(name, email)).addOnFailureListener { e ->
             // Handle any errors here
             Log.e("FirebaseError", "Error saving user data", e)
         }
@@ -136,4 +136,4 @@ fun saveUserData(email: String, password: String) {
 }
 
 // com.company.login.ui.theme.screens.User data model
-data class User(val email: String, val password: String)
+data class User(val name: String, val email: String)

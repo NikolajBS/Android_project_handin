@@ -55,6 +55,8 @@ fun ProfileScreen(navigation: NavController, appSettings: MutableState<AppSettin
             val user = dataSnapshot.getValue(User::class.java)
             // Do something with the user data
             if (user != null) {
+                name = TextFieldValue(user.name)
+
                 email = TextFieldValue(user.email)
                 password = TextFieldValue(user.password)
             }
@@ -74,7 +76,7 @@ fun ProfileScreen(navigation: NavController, appSettings: MutableState<AppSettin
         horizontalAlignment = Alignment.CenterHorizontally
 
     ) {
-        NameBox(name = "Jens Hansen")
+        NameBox(name = name.text)
         EmailBox(email = email.text)
         PasswordBox(password = password.text, isVisible)
         BirthdateBox(date = "08/23-1989")
