@@ -45,6 +45,7 @@ import java.util.UUID
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupEdit(navigation: NavHostController, groupId: String) {
+    var newPerson by remember { mutableStateOf("") }
     var groupName by remember { mutableStateOf("") }
     var groupDescription by remember { mutableStateOf("") }
     var newPersonName by remember { mutableStateOf("") }
@@ -120,46 +121,24 @@ fun GroupEdit(navigation: NavHostController, groupId: String) {
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
             )
-
             // Button for Add Person
             Button(
                 onClick = {
                     val amount = newAmount.toDoubleOrNull() ?: 0.0
+                    val name = newPersonName
+                    val newPersonData = GroupPerson(name, amount)
 
-                    // Retrieve the current maximum groupId
-                    groupRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            val maxGroupId = snapshot.children.mapNotNull {
-                                it.child("id").getValue(String::class.java)?.toIntOrNull()
-                            }.maxOrNull() ?: 0
-                            
+                    // Add the new person to the Firebase database
+                    groupRef.child("people").push().setValue(newPersonData)
 
-                            // Generate a unique ID for the group
-                            val newGroupId = groupIdCounter.toString()
-                            val newGroupRef: DatabaseReference =
-                                FirebaseManager.database.child("groups").child(newGroupId)
-
-                            val newPersonData = GroupPerson(newPersonName, amount)
-
-                            // Add the new person to the Firebase database
-                            newGroupRef.child("people").push().setValue(newPersonData)
-
-                            // Clear the input fields
-                            newPersonName = ""
-                            newAmount = ""
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            // Handle error
-                        }
-                    })
+                    // Clear the input fields
+                    newPersonName = ""
+                    newAmount = ""
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp)
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
-                Spacer(modifier = Modifier.width(4.dp))
                 Text(text = "Add Person")
             }
 
