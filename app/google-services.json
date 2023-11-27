@@ -1,13 +1,23 @@
 {
   "project_info": {
+<<<<<<< HEAD
     "project_number": "97206618096",
     "project_id": "android-ba887",
     "storage_bucket": "android-ba887.appspot.com"
+=======
+    "project_number": "792435650064",
+    "project_id": "weshare-a35d4",
+    "storage_bucket": "weshare-a35d4.appspot.com"
+>>>>>>> main
   },
   "client": [
     {
       "client_info": {
+<<<<<<< HEAD
         "mobilesdk_app_id": "1:97206618096:android:9e7f98fe25353c7f657f35",
+=======
+        "mobilesdk_app_id": "1:792435650064:android:1ba3942e1b14d89b836495",
+>>>>>>> main
         "android_client_info": {
           "package_name": "com.example.android_project"
         }
@@ -15,7 +25,11 @@
       "oauth_client": [],
       "api_key": [
         {
+<<<<<<< HEAD
           "current_key": "AIzaSyDxLAtMOjdHzxm9stZ4YvhgFbEQHht_icE"
+=======
+          "current_key": "AIzaSyCd8yY8Q0HW9_dKg2isyPPHw3YpR1gQe2I"
+>>>>>>> main
         }
       ],
       "services": {
