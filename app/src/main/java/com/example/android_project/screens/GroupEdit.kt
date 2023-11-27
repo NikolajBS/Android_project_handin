@@ -45,10 +45,6 @@ fun GroupEdit(navigation: NavHostController) {
     var newPersonName by remember { mutableStateOf("") }
     var newAmount by remember { mutableStateOf("") }
 
-    // Generate a unique ID for the group
-    val groupId = UUID.randomUUID().toString()
-    val groupRef: DatabaseReference = FirebaseManager.database.child("groups").child(groupId)
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -111,6 +107,11 @@ fun GroupEdit(navigation: NavHostController) {
             Button(
                 onClick = {
                     val amount = newAmount.toDoubleOrNull() ?: 0.0
+                    val groupId = groupIdCounter.toString()
+
+                    // Generate a unique ID for the group
+                    val groupRef: DatabaseReference = FirebaseManager.database.child("groups").child(groupId)
+
                     val newPersonData = GroupPerson(newPersonName, amount)
 
                     // Add the new person to the Firebase database
@@ -130,12 +131,10 @@ fun GroupEdit(navigation: NavHostController) {
             }
 
             // Button for Confirm
-            // Button for Confirm
             Button(
                 onClick = {
                     if (groupName.isNotEmpty() && groupDescription.isNotEmpty()) {
                         val groupId = groupIdCounter.toString()
-                        groupIdCounter++
 
                         // Use groupId in your Firebase operations
                         val groupRef: DatabaseReference = FirebaseManager.database.child("groups").child(groupId)
@@ -147,6 +146,9 @@ fun GroupEdit(navigation: NavHostController) {
 
                         // Navigate to the GroupPage with the generated groupId
                         navigation.navigate(Screen.GroupPage.route + "/$groupId")
+
+                        // Increment groupIdCounter for the next group
+                        groupIdCounter++
                     } else {
                         // Show an error message or UI feedback about empty name or description
                     }
@@ -157,7 +159,6 @@ fun GroupEdit(navigation: NavHostController) {
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(text = "Create Group")
             }
-
         }
     }
 }
