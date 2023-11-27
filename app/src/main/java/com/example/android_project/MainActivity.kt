@@ -37,11 +37,13 @@ import androidx.compose.ui.unit.dp
 import com.example.android_project.data.AppSettings
 import com.example.android_project.routes.Screen
 import com.example.android_project.screens.GroupEdit
+import com.example.android_project.screens.GroupMaking
 import com.example.android_project.screens.GroupPage
 import com.example.android_project.ui.theme.Android_projectTheme
 import com.example.android_project.screens.HomeScreen
 import com.example.android_project.screens.ProfileScreen
 import com.example.android_project.screens.SettingsScreen
+import com.example.android_project.screens.SignUp
 import com.example.android_project.screens.TransactionActivity
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
@@ -101,6 +103,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     )
 }
 
+
 @Composable
 fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSettings>) {
     val navigation = rememberNavController();
@@ -138,9 +141,10 @@ fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSetti
                 selected = false,
                 onClick = {
                     Log.d("Navigation", "Navigating to HomeScreen")
-                    navigation.navigate(Screen.HomeScreen.route) },
+                    navigation.navigate(Screen.HomeScreen.route)
+                },
                 icon = {
-                    Column (
+                    Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
@@ -195,7 +199,13 @@ fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSetti
                 val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
                 GroupPage(navigation = navigation, groupId = groupId)
             }
-            composable(Screen.GroupEdit.route) { GroupEdit(navigation = navigation) }
+            composable(Screen.GroupEdit.route + "/{groupId}") { backStackEntry ->
+                val groupId = backStackEntry.arguments?.getString("groupId") ?: ""
+                GroupEdit(
+                    navigation = navigation,
+                    groupId = groupId
+                )
+            }
             composable(Screen.SettingsScreen.route) {
                 SettingsScreen(navigation = navigation, appSettings = appSettings) {
                     // Update appSettings when needed
@@ -210,6 +220,9 @@ fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSetti
             }
             composable(Screen.Login.route){LoginScreen(navigation = navigation)}
             composable(Screen.EditProfile.route){EditProfileScreen(navigation = navigation)}
+
+            composable(Screen.SignUp.route) { SignUp(navigation = navigation) }
+            composable(Screen.GroupMaking.route) { GroupMaking(navigation = navigation) }
 
         }
     }

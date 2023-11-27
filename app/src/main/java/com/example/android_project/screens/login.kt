@@ -112,6 +112,18 @@ fun LoginScreen(navigation: NavHostController) {//,onLoginSuccess: () -> Unit
                 {
                     Text("Login")
                 }
+                // Signup button
+                Button(
+                    onClick = {
+                        // Navigate to the signup screen
+                        navigation.navigate(Screen.SignUp.route)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Text("Signup")
+                }
             }
         }
     }
