@@ -1,5 +1,6 @@
 package com.example.android_project.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -11,6 +12,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.ui.Alignment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.example.android_project.screens.HomeScreen
+import com.example.android_project.routes.Screen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,7 +75,44 @@ fun SignUp(navigation: NavHostController) {
 
         Button(
             onClick = {
-               // data base logikken kan blive implementeret here
+                // Validate fields
+                if (displayName.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()) {
+                    // Check if passwords match
+                    if (password == confirmPassword) {
+                        // Create Firebase account
+                        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    // Account creation success
+                                    Log.d("SignUp", "Account created successfully")
+                                    navigation.navigate(Screen.HomeScreen.route)
+                                } else {
+                                    // If account creation fails, display a message to the user.
+                                    try {
+                                        throw task.exception!!
+                                    } catch (e: FirebaseAuthWeakPasswordException) {
+                                        // Weak password
+                                        Log.e("SignUp", "Weak password", e)
+                                    } catch (e: FirebaseAuthInvalidCredentialsException) {
+                                        // Invalid email
+                                        Log.e("SignUp", "Invalid email", e)
+                                    } catch (e: FirebaseAuthUserCollisionException) {
+                                        // Account already exists
+                                        Log.e("SignUp", "Account already exists", e)
+                                    } catch (e: Exception) {
+                                        // General exception
+                                        Log.e("SignUp", "Account creation failed", e)
+                                    }
+                                }
+                            }
+                    } else {
+                        // Passwords do not match
+                        Log.e("SignUp", "Passwords do not match")
+                    }
+                } else {
+                    // Empty fields
+                    Log.e("SignUp", "All fields must be filled")
+                }
             },
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp)
         ) {
