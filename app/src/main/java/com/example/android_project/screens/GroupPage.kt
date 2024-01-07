@@ -64,6 +64,7 @@ fun GroupPage(navigation: NavHostController, groupId: String) {
     var groupName by remember { mutableStateOf("") }
     var groupDescription by remember { mutableStateOf("") }
     var id by remember { mutableStateOf("") }
+    var split by remember { mutableStateOf(0.0) }
 
     LaunchedEffect(groupId) {
         // Use coroutine for database interaction
@@ -80,6 +81,12 @@ fun GroupPage(navigation: NavHostController, groupId: String) {
             totalAmount += person?.amount ?: 0.0
             groupMembers = groupMembers + listOf(person!!)
         }
+
+        // Calculate total amount (sum of individual amounts)
+        totalAmount = groupMembers.sumByDouble { it.amount }
+        split=totalAmount/groupMembers.size
+
+
 
         // Calculate owed amount (customize this logic based on your requirements)
         owedAmount = if (groupMembers.isNotEmpty()) {
@@ -124,6 +131,23 @@ fun GroupPage(navigation: NavHostController, groupId: String) {
                 text = "Group Description: $groupDescription",
                 style = MaterialTheme.typography.headlineMedium
             )
+            // Display total amount of group members
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                text = "Total Amount: $totalAmount kr",
+                style = MaterialTheme.typography.headlineMedium
+            )
+            // Display total amount of group members
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                text="Every person owes: $split kr",
+                style = MaterialTheme.typography.headlineMedium
+            )
+
 
             // Display group members
             for (member in groupMembers) {
