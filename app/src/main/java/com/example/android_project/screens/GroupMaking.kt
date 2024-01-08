@@ -1,6 +1,9 @@
 package com.example.android_project.screens
 
 
+import android.Manifest
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -14,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,13 +26,17 @@ import androidx.navigation.compose.rememberNavController
 import com.example.android_project.FirebaseManager
 import com.example.android_project.data.GroupPerson
 import com.example.android_project.routes.Screen
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import java.util.UUID
 
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun GroupMaking(navigation: NavHostController) {
     var groupIdCounter by remember { mutableStateOf(0) }
@@ -40,6 +48,15 @@ fun GroupMaking(navigation: NavHostController) {
     // Generate a unique ID for the group
     val groupId = UUID.randomUUID().toString()
     val groupRef: DatabaseReference = FirebaseManager.database.child("groups")
+
+    val postNotificationPermission=
+        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+    val notificationService= NotificationService(context = LocalContext.current)
+    LaunchedEffect(key1 = true ){
+        if(!postNotificationPermission.status.isGranted){
+            postNotificationPermission.launchPermissionRequest()
+        }
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -141,9 +158,11 @@ fun GroupMaking(navigation: NavHostController) {
                 Text(text = "Add Person")
             }
 
+
             // Button for Confirm
             Button(
                 onClick = {
+                    notificationService.showBasicNotification()
                     if (groupName.isNotEmpty() && groupDescription.isNotEmpty()) {
                         // Use groupId in your Firebase operations
                         val newGroupId = groupIdCounter.toString()
@@ -172,6 +191,7 @@ fun GroupMaking(navigation: NavHostController) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun GroupMakingScreenPreview() {

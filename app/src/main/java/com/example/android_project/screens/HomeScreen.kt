@@ -50,7 +50,9 @@ fun HomeScreen(navigation: NavHostController, appSettings: MutableState<AppSetti
         groups = fetchGroups()
     }
 
-    Column(modifier = Modifier.padding(8.dp).height(660.dp)) {
+    Column(modifier = Modifier
+        .padding(8.dp)
+        .height(660.dp)) {
         Row {
             Button(onClick = { navigation.navigate(Screen.GroupMaking.route) }) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
@@ -79,7 +81,10 @@ fun GroupItem(group: GroupItem, onItemClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(16.dp))
+            .background(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                RoundedCornerShape(16.dp)
+            )
             .clickable { onItemClick.invoke() } // Make the item clickable
             .padding(16.dp)
     ) {
@@ -132,3 +137,33 @@ fun CreateGroup() {
     }
     Spacer(modifier = Modifier.height(30.dp))
 }
+/*
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun notificationPermission(){
+    val permissionsState = rememberPermissionState(permission = Manifest.permission.POST_NOFIFICATIONS)
+    val context = LocalContext.current
+
+    if(!permissionsState.status.isGranted){
+        if(permissionsState.status.shouldShowRationale){
+            RationaleDialog(onDismissRequest = {
+                Toast.makeText(context, "Permission something", Toast.LENGTH_SHORT).show()
+            },onConfirm={permissionsState.launchPermissionRequest()})
+        }
+        else {
+            PermissionDialog(
+                onRequestPermission =  {permissionsState.launchPermissionRequest()},
+                onDismissRequest = {
+                    Toast.makeText(
+                        context,
+                        "PERMISSION LOL",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            )
+        }
+    }
+
+
+}
+*/

@@ -55,6 +55,7 @@ dependencies {
     implementation("com.google.firebase:firebase-database-ktx:20.3.0") // Use the desired version
     implementation("com.google.firebase:firebase-auth:22.3.0")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.30.1")
     // nav
     implementation ("androidx.navigation:navigation-compose:2.7.0")
     //nav stop

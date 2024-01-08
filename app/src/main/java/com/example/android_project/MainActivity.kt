@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,15 +42,23 @@ import com.example.android_project.screens.GroupMaking
 import com.example.android_project.screens.GroupPage
 import com.example.android_project.ui.theme.Android_projectTheme
 import com.example.android_project.screens.HomeScreen
+import com.example.android_project.screens.NotificationService
 import com.example.android_project.screens.ProfileScreen
 import com.example.android_project.screens.SettingsScreen
 import com.example.android_project.screens.SignUp
 import com.example.android_project.screens.TransactionActivity
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
-
+import android.Manifest
+import android.os.Build
+import androidx.annotation.RequiresApi
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
+    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializeFirebase(applicationContext)
@@ -66,9 +75,10 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Navigation(appSettings = appSettings)
+
+
                 }
             }
-
         }
     }
 }
@@ -104,6 +114,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Navigation(modifier: Modifier = Modifier, appSettings: MutableState<AppSettings>) {
     val navigation = rememberNavController();
